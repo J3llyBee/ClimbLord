@@ -1,1 +1,1 @@
-odin run src/main.odin -out:build/main.exe
+odin run src/ -out:build/main.exe
