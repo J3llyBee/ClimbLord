@@ -8,10 +8,11 @@ jump_cooldown: f32 = 0.05
 
 Player :: struct {
     using entity: Entity,
+    flag: Entity,
 }
 
 player_update :: proc(p: ^Player) {
-    tiles := room[:]
+    tiles := gs.room[:]
 
     hdir: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
     vdir: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
@@ -54,5 +55,7 @@ player_update :: proc(p: ^Player) {
             }
         }
     }
+
+    p.flag.pos = p.pos
 }
 // 0.211

@@ -11,6 +11,7 @@ inputs := Inputs {
 	"DOWN" = {rl.KeyboardKey.S, rl.KeyboardKey.DOWN},
 	"LEFT" = {rl.KeyboardKey.A, rl.KeyboardKey.LEFT},
 	"RIGHT" = {rl.KeyboardKey.D, rl.KeyboardKey.RIGHT},
+	"SWITCH" = {rl.KeyboardKey.Q},
 }
 
 @private

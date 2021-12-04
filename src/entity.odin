@@ -84,12 +84,12 @@ entity_on_tile_multi :: proc(e1: ^Entity, es: ^[]$T) -> bool {
 
 entity_on_tile :: proc{entity_on_tile_single, entity_on_tile_multi}
 
-entity_render_single :: proc(using e: ^Entity) {
-    rl.DrawTexture(sprite, i32(pos.x - size.x / 2), i32(pos.y - size.y / 2), rl.WHITE)
+entity_render_single :: proc(using e: ^Entity, color := rl.WHITE) {
+    rl.DrawTexture(sprite, i32(pos.x - size.x / 2), i32(pos.y - size.y / 2), color)
 }
 
-entity_render_multi :: proc(es: ^[]$T) {
-    for i in es do entity_render_single(&i)
+entity_render_multi :: proc(es: ^[]$T, color := rl.WHITE) {
+    for i in es do entity_render_single(&i, color)
 }
 
 entity_render :: proc{entity_render_single, entity_render_multi}
