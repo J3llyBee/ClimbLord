@@ -2,23 +2,14 @@
     "collections": [
         {
             "name": "core",
-            "path": "/Users/gus/Odin/core"
+            "path": "C:\\Users\\Joel\\Documents\\ODIN\\core"
         },
         {
             "name": "vendor",
-            "path": "/Users/gus/Odin/vendor"
-        },
-        {
-            "name": "phish",
-            "path": "./"
+            "path": "C:\\Users\\Joel\\Documents\\ODIN\\vendor"
         }
     ],
-    "defines": [
-        {
-            "name": "PHISH_RES_DIR",
-            "value": "../res/"
-        }
-    ],
+    "defines": [],
     "enable_document_symbols": true,
     "enable_semantic_tokens": true,
     "enable_hover": true

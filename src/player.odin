@@ -4,23 +4,31 @@ import "core:fmt"
 
 import rl "vendor:raylib"
 
+jump_cooldown: f32 = 0.05
+
 Player :: struct {
     using entity: Entity,
 }
 
 player_update :: proc(p: ^Player) {
+    tiles := room[:]
+
     hdir: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
     vdir: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
 
     p.pos.x += 100 * hdir * rl.GetFrameTime()
 
-    if !entity_on_tile(p, &tiles) {
-        vel += gravity * rl.GetFrameTime()
+    jump_cooldown -= rl.GetFrameTime()
+
+
+    if vdir == -1 && entity_on_tile(p, &tiles) && jump_cooldown < 0 {
+        jump_cooldown = 0.05
+        vel += -50
+    } else if entity_on_tile(p, &tiles) {
+        vel = 0
     }
-    if vdir == -1 && entity_on_tile(p, &tiles) {
-        vel += -10000 * rl.GetFrameTime()
-    } else if vdir == 1 {
-        vel += gravity * rl.GetFrameTime()
+
+    if !entity_on_tile(p, &tiles) {
         vel += gravity * rl.GetFrameTime()
     }
 
