@@ -27,4 +27,5 @@ player_update :: proc(p: ^Player) {
 
 player_render :: proc(using p: ^Player) {
     rl.DrawTexture(sprite, i32(pos.x), i32(pos.y), rl.WHITE)
-}
+} 
+// 0.211
