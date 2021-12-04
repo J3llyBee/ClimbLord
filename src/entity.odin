@@ -42,7 +42,7 @@ entity_col_dir :: proc(e1, e2: ^Entity) -> Dir {
     return .NONE
 }
 
-entity_on_floor :: p
+// entity_on_floor :: p
 
 
 entity_render :: proc(using e: ^Entity) {
