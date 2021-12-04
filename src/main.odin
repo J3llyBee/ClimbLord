@@ -7,12 +7,13 @@ import rl "vendor:raylib"
 
 p := Player {}
 t := Tile {}
-gravity: f32 = 100
+gravity: f32 = -100
+vel: f32 = 0
 
 main :: proc() {
     rl.InitWindow(224 * 4, 224 * 4, "ClimbLord")
 
-    p.pos = {100, 0}
+    p.pos = {100, 400}
     p.sprite = rl.LoadTexture("./amon.png")
     p.size = {f32(p.sprite.width), f32(p.sprite.height)}
 
@@ -32,8 +33,9 @@ update :: proc() {
 
     rl.ClearBackground(rl.WHITE)
  
-    player_render(&p)
-    tile_render(&t)
+    entity_render(&p)
+    entity_render(&t)
+
     player_update(&p)
 
     rl.EndDrawing()
