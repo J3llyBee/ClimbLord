@@ -12,11 +12,11 @@ gravity: f32 = 100
 main :: proc() {
     rl.InitWindow(224 * 4, 224 * 4, "ClimbLord")
 
-    p.pos = {0, 0}
+    p.pos = {100, 0}
     p.sprite = rl.LoadTexture("./amon.png")
     p.size = {f32(p.sprite.width), f32(p.sprite.height)}
 
-    t.pos = {0, 100}
+    t.pos = {100, 100}
     t.sprite = rl.LoadTexture("./tile.png")
     t.size = {f32(t.sprite.width), f32(t.sprite.height)}
 
@@ -33,8 +33,8 @@ update :: proc() {
     rl.ClearBackground(rl.WHITE)
  
     player_render(&p)
-    player_update(&p)
     tile_render(&t)
+    player_update(&p)
 
     rl.EndDrawing()
 }

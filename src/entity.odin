@@ -15,3 +15,7 @@ entity_get_rec :: proc(using e: ^Entity) -> rl.Rectangle {
 entity_check_col :: proc(e1, e2: ^Entity) -> bool {
     return rl.CheckCollisionRecs(entity_get_rec(e1), entity_get_rec(e2))
 }
+
+entity_get_col_rec :: proc(e1, e2: ^Entity) -> rl.Rectangle {
+    return rl.GetCollisionRec(entity_get_rec(e1), entity_get_rec(e2))
+}
