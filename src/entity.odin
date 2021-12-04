@@ -42,7 +42,13 @@ entity_col_dir :: proc(e1, e2: ^Entity) -> Dir {
     return .NONE
 }
 
-// entity_on_floor :: p
+// Wont work for upside down
+entity_on_tile :: proc(e1, e2: ^Entity) -> bool {
+    x := entity_get_rec(e1)
+    x.height += 1
+
+    return rl.CheckCollisionRecs(x, entity_get_rec(e2))
+}
 
 
 entity_render :: proc(using e: ^Entity) {

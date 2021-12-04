@@ -7,7 +7,10 @@ import rl "vendor:raylib"
 Inputs :: distinct map[string][]rl.KeyboardKey
 
 inputs := Inputs {
-	"up" = {rl.KeyboardKey.W, rl.KeyboardKey.UP},
+	"UP" = {rl.KeyboardKey.W, rl.KeyboardKey.UP},
+	"DOWN" = {rl.KeyboardKey.S, rl.KeyboardKey.DOWN},
+	"LEFT" = {rl.KeyboardKey.A, rl.KeyboardKey.LEFT},
+	"RIGHT" = {rl.KeyboardKey.D, rl.KeyboardKey.RIGHT},
 }
 
 @private

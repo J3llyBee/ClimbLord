@@ -9,19 +9,21 @@ Player :: struct {
 }
 
 player_update :: proc(p: ^Player) {
-    hdir: f32 = (rl.IsKeyDown(rl.KeyboardKey.D) ? 1.0 : 0.0) - (rl.IsKeyDown(rl.KeyboardKey.A) ? 1.0 : 0.0)
-    vdir: f32 = (rl.IsKeyDown(rl.KeyboardKey.S) ? 1.0 : 0.0) - (rl.IsKeyDown(rl.KeyboardKey.W) ? 1.0 : 0.0)
+    hdir: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
+    vdir: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
 
     p.pos.x += 100 * hdir * rl.GetFrameTime()
 
-    if !rl.CheckCollisionPointRec({p.pos.x, p.pos.y + p.size.y + 1}, entity_get_rec(&t)) {
+    if !entity_on_tile(p, &t) {
         vel += gravity * rl.GetFrameTime()
     }
-    if vdir == -1 && rl.CheckCollisionPointRec({p.pos.x, p.pos.y + p.size.y + 1}, entity_get_rec(&t)) {
+    if vdir == -1 && entity_on_tile(p, &t) {
         vel += -5000 * rl.GetFrameTime()
     }
     
     p.pos.y += vel * rl.GetFrameTime()
+
+
 
     if entity_check_col(p, &t) {
         col := entity_get_col_rec(p, &t)
