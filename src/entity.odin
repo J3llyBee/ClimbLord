@@ -17,7 +17,7 @@ Dir :: enum {
 }
 
 entity_get_rec :: proc(using e: ^Entity) -> rl.Rectangle {
-    return rl.Rectangle { pos.x - size.x / 2, pos.y - size.y / 2, size.x, size.y }
+    return rl.Rectangle { pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 1, size.x - 1, size.y - 1 }
 }
 
 entity_check_col_single :: proc(e1, e2: ^Entity) -> bool {

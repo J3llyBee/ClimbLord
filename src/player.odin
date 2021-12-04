@@ -24,7 +24,7 @@ player_update :: proc(p: ^Player) {
 
     if vdir == -1 && entity_on_tile(p, &tiles) && jump_cooldown < 0 {
         jump_cooldown = 0.05
-        vel += -50
+        vel += -100
     } else if entity_on_tile(p, &tiles) {
         vel = 0
     }
@@ -45,11 +45,11 @@ player_update :: proc(p: ^Player) {
             rl.DrawRectangleRec(i, rl.BLACK)
 
             if abs(i.width) < abs(i.height) && !dx {
-                p.pos.x += i.width * (p.pos.x - i.x > 0.0 ? 1.0 : -1.0) - 1
+                p.pos.x += i.width * (p.pos.x - i.x > 0.0 ? 1.0 : -1.0)
 
                 dx = true
             } else if !dy {
-                p.pos.y += i.height * (p.pos.y - i.y > 0.0 ? 1.0 : -1.0) - 1
+                p.pos.y += i.height * (p.pos.y - i.y > 0.0 ? 1.0 : -1.0)
 
                 dy = true
             }

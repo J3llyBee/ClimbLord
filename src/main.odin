@@ -36,6 +36,13 @@ main :: proc() {
 
     gs.camera.zoom = 4
 
+    for a := 0; a < room_height; a += 3 {
+        for i in 0..room_width {
+            append_elem(&gs.room, tile_new({16 * f32(i) + 8, 216 - f32(a) * 16}, load_texture("tile.png")))
+        }
+    }
+    make_path()
+
     gs.player.pos = {100, 0}
     gs.player.sprite = load_texture("amon.png")
     gs.player.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
@@ -61,7 +68,17 @@ render_room :: proc(room: ^[dynamic]Tile) {
 }
 
 make_path :: proc() {
-    // sus
+    for i := 0; i < room_height; i += 3 {
+        RND: i32 = rl.GetRandomValue(0, i32(room_width))
+        check_room(int(RND), i)
+        numb: int = coinflip(-1, 1)
+        if RND + i32(numb) <= i32(room_width) && RND + i32(numb) >= 0 {
+            check_room(int(RND) + int(numb), i)
+        } else {
+            check_room(int(RND) + int(numb * -1), i)
+        }
+
+    }
 }
 
 update :: proc() {
@@ -79,6 +96,7 @@ update :: proc() {
     }
 
     player_update(&gs.player)
+    gs.camera.offset.y += 50 * rl.GetFrameTime()
 
     rl.BeginDrawing()
         rl.ClearBackground(palettes[gs.palette][gs.switched ? 3 : 0])
