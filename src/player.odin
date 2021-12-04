@@ -14,26 +14,36 @@ player_update :: proc(p: ^Player) {
 
     p.pos.x += 100 * hdir * rl.GetFrameTime()
 
-    if !entity_on_tile(p, &t) {
+    if !entity_on_tile(p, &tiles) {
         vel += gravity * rl.GetFrameTime()
     }
-    if vdir == -1 && entity_on_tile(p, &t) {
-        vel += -5000 * rl.GetFrameTime()
+    if vdir == -1 && entity_on_tile(p, &tiles) {
+        vel += -10000 * rl.GetFrameTime()
+    } else if vdir == 1 {
+        vel += gravity * rl.GetFrameTime()
+        vel += gravity * rl.GetFrameTime()
     }
-    
+
     p.pos.y += vel * rl.GetFrameTime()
 
+    dx := false
+    dy := false
 
+    if entity_check_col(p, &tiles) {
+        cols := entity_get_col_rec(p, &tiles)
 
-    if entity_check_col(p, &t) {
-        col := entity_get_col_rec(p, &t)
+        for i in &cols {
+            rl.DrawRectangleRec(i, rl.BLACK)
 
-        rl.DrawRectangleRec(col, rl.BLACK)
+            if abs(i.width) < abs(i.height) && !dx {
+                p.pos.x += i.width * (p.pos.x - i.x > 0.0 ? 1.0 : -1.0) - 1
 
-        if abs(col.width) < abs(col.height) {
-            p.pos.x += col.width * (p.pos.x - col.x > 0.0 ? 1.0 : -1.0)
-        } else {
-            p.pos.y += col.height * (p.pos.y - col.y > 0.0 ? 1.0 : -1.0)
+                dx = true
+            } else if !dy {
+                p.pos.y += i.height * (p.pos.y - i.y > 0.0 ? 1.0 : -1.0) - 1
+
+                dy = true
+            }
         }
     }
 }

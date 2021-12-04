@@ -2,11 +2,11 @@
     "collections": [
         {
             "name": "core",
-            "path": "/Users/gus/Odin/core"
+            "path": "C:\\Users\\Joel\\Documents\\ODIN\\core"
         },
         {
             "name": "vendor",
-            "path": "/Users/gus/Odin/vendor"
+            "path": "C:\\Users\\Joel\\Documents\\ODIN\\vendor"
         }
     ],
     "defines": [],
