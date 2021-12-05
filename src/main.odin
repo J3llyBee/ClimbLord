@@ -36,6 +36,8 @@ main :: proc() {
 
     gs.camera.zoom = 4
 
+
+
     for a := 0; a < room_height; a += 3 {
         for i in 0..room_width {
             append_elem(&gs.room, tile_new({16 * f32(i) + 8, 216 - f32(a) * 16}, load_texture("tile.png")))
@@ -88,7 +90,7 @@ update :: proc() {
     // fmt.println(rl.GetFrameTime())\
 
     gs.switch_timout -= rl.GetFrameTime()
-
+  
     if input_is_down("SWITCH") && gs.switch_timout <= 0 {
         gs.switched = !gs.switched
 
