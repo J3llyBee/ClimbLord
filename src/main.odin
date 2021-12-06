@@ -30,11 +30,20 @@ room_height: = 20
 gravity: f32 = 100
 
 main :: proc() {
-    rl.InitWindow(240 * 4, 240 * 4, "ClimbLord")
+    when ODIN_OS == "darwin" {
+        rl.InitWindow(240 * 3, 240 * 3, "ClimbLord")
 
-    gs.palette = 3
+        gs.palette = 3
 
-    gs.camera.zoom = 4
+        gs.camera.zoom = 3
+    } else {
+        rl.InitWindow(240 * 4, 240 * 4, "ClimbLord")
+
+        gs.palette = 3
+
+        gs.camera.zoom = 4
+    }
+
 
     gs.room = room_new(15, 15, 50)
 
