@@ -52,8 +52,12 @@ main :: proc() {
     gs.player.sprite = load_texture("amon.png")
     gs.player.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
 
-    gs.player.flag.sprite = load_texture("flag.png")
-    gs.player.flag.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
+    gs.player.flag = load_texture("flag.png")
+    // gs.player.flag.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
+
+    tile_sprites = map[TileType][]rl.Texture {
+        TileType.BASIC = []rl.Texture{ load_texture("tile.png") },
+    }
 
     for !rl.WindowShouldClose() {
         rl.PollInputEvents()
@@ -81,8 +85,9 @@ update :: proc() {
         rl.ClearBackground(palettes[gs.palette][gs.switched ? 3 : 0])
 
         rl.BeginMode2D(gs.camera)
-            entity_render(&gs.player, palettes[gs.palette][1])
-            entity_render(&gs.player.flag, palettes[gs.palette][2])
+            // entity_render(&gs.player, palettes[gs.palette][1])
+            // entity_render(&gs.player.flag, palettes[gs.palette][2])
+            player_render(&gs.player)
             room_render(gs.room)
 
             player_update(&gs.player)

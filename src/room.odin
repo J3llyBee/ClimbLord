@@ -22,7 +22,7 @@ room_new :: proc(width, height, fill: int) -> ^Room {
         	cnt := room_get_neighbours(r, x, y)
 
         	if cnt > 5 {
-        		if r.inner[y * r.width + x] == nil do r.inner[y * r.width + x] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}, load_texture("tile.png")) 
+        		if r.inner[y * r.width + x] == nil do r.inner[y * r.width + x] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}) 
         	} else if cnt < 4 {
         		if r.inner[y * r.width + x] != nil {
         			free(r.inner[y * r.width + x])
@@ -39,7 +39,7 @@ room_random_fill :: proc(r: ^Room, fill: int) {
 	for y in 0..<r.height {
         for x in 0..<r.width {
         	if rand.int31_max(100) < i32(fill) {
-        		r.inner[y * r.width + x] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}, load_texture("tile.png")) 
+        		r.inner[y * r.width + x] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}) 
         	} else {
         		r.inner[y * r.width + x] = nil
         	}
@@ -50,7 +50,7 @@ room_random_fill :: proc(r: ^Room, fill: int) {
 room_render :: proc(r: ^Room) {
 	for y in 0..<r.height {
 		for x in 0..<r.width {
-			if r.inner[y * r.width + x] != nil do entity_render(r.inner[y * r.width + x], palettes[gs.palette][3])
+			if r.inner[y * r.width + x] != nil do tile_render(r.inner[y * r.width + x], palettes[gs.palette][3])
 		}
 	}
 }

@@ -21,6 +21,10 @@ hexcol :: #force_inline proc(x: u32) -> (res: rl.Color) {
 	return
 }
 
+base_render :: proc(using x: $T, color := rl.WHITE) {
+	rl.DrawTexture(sprite, i32(pos.x - size.x / 2), i32(pos.y - size.y / 2), color)
+}
+
 sign_rect :: proc(rect: ^rl.Rectangle) {
 	if rect.width < 0 {
 		rect.x += rect.width

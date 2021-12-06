@@ -8,8 +8,10 @@ jump_cooldown: f32 = 0.05
 
 Player :: struct {
     using entity: Entity,
+    sprite: rl.Texture,
+    flag: rl.Texture,
+
     vel: vec2,
-    flag: Entity,
 }
 
 player_update :: proc(p: ^Player) {
@@ -24,9 +26,8 @@ player_update :: proc(p: ^Player) {
     if p.vel.x != 0 {
         xcol := rl.Rectangle {p.pos.x, p.pos.y - p.size.y / 2, p.vel.x + (p.size.x * hdir), p.size.y}
         sign_rect(&xcol)
-        rl.DrawRectangleRec(xcol, rl.BLACK)
-        if rect_check_col(xcol, &tiles) {
-            cols := rect_get_col_rec_multi(xcol, &tiles)
+        if entity_check_col_multi(xcol, &tiles) {
+            cols := entity_get_cols(xcol, &tiles)
             current := abs(p.vel.x)
             for i in &cols {
                 dist := length_between({p.pos.x, 0}, {i.pos.x, 0}) - (i.size.x / 2 + p.size.x / 2)
@@ -45,9 +46,8 @@ player_update :: proc(p: ^Player) {
     if p.vel.y != 0 {
         ycol := rl.Rectangle {p.pos.x - p.size.x / 2, p.pos.y, p.size.x, p.vel.y + (p.size.y * vdir)}
         sign_rect(&ycol)
-        rl.DrawRectangleRec(ycol, rl.BLACK)
-        if rect_check_col(ycol, &tiles) {
-            cols := rect_get_col_rec_multi(ycol, &tiles)
+        if entity_check_col_multi(ycol, &tiles) {
+            cols := entity_get_cols(ycol, &tiles)
             current := abs(p.vel.y)
             for i in &cols {
                 dist := length_between({0, p.pos.y}, {0, i.pos.y}) - (i.size.y / 2 + p.size.y / 2)
@@ -72,27 +72,10 @@ player_update :: proc(p: ^Player) {
     // if !entity_on_tile(p, &tiles) {
     //     vel += gravity * rl.GetFrameTime()
     // }
-    // dx := false
-    // dy := false
+}
 
-    // if entity_check_col(p, &tiles) {
-    //     cols := entity_get_col_rec(p, &tiles)
-
-    //     for i in &cols {
-    //         rl.DrawRectangleRec(i, rl.BLACK)
-
-    //         if abs(i.width) < abs(i.height) && !dx {
-    //             p.pos.x += i.width * (p.pos.x - i.x > 0.0 ? 1.0 : -1.0)
-
-    //             dx = true
-    //         } else if !dy {
-    //             p.pos.y += i.height * (p.pos.y - i.y > 0.0 ? 1.0 : -1.0)
-
-    //             dy = true
-    //         }
-    //     }
-    // }
-
-    p.flag.pos = p.pos
+player_render :: proc(using p: ^Player) {
+    base_render(p, palettes[gs.palette][1])
+    rl.DrawTexture(p.flag, i32(pos.x - size.x / 2), i32(pos.y - size.y / 2), palettes[gs.palette][2])
 }
 // 0.211
