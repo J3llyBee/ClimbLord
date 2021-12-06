@@ -2,12 +2,12 @@
     "collections": [
         {
             "name": "core",
-            "path": "C:\\Users\\Joel\\Documents\\ODIN\\core"
+            "path": "/Users/gus/Odin/core"
         },
         {
             "name": "vendor",
-            "path": "C:\\Users\\Joel\\Documents\\ODIN\\vendor"
-        }
+            "path": "/Users/gus/Odin/vendor"
+        },
     ],
     "defines": [],
     "enable_document_symbols": true,

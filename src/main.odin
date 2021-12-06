@@ -32,11 +32,11 @@ gravity: f32 = 100
 main :: proc() {
     rl.InitWindow(224 * 4, 224 * 4, "ClimbLord")
 
-    gs.palette = 4
+    gs.palette = 3
 
     gs.camera.zoom = 4
 
-    gs.room = room_new(20, 20, 50)
+    gs.room = room_new(13, 13, 50)
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
