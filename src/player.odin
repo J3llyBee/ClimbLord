@@ -5,15 +5,14 @@ import "core:math"
 
 import rl "vendor:raylib"
 
-jump_cooldown: f32 = 0.0
-jumped := false
-
 Player :: struct {
     using entity: Entity,
     sprite: rl.Texture,
     flag: rl.Texture,
 
     vel: vec2,
+    jumped: bool,
+    flip: bool,
 }
 
 GRAVITY: f32 = (2.0 * 36.0) / math.pow_f32(0.5, 2)
@@ -26,7 +25,7 @@ player_update :: proc(p: ^Player) {
     hinp: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
     vinp: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
 
-    jump_cooldown -= rl.GetFrameTime()
+    p.flip = hinp == -1
 
     p.vel.y = p.vel.y + GRAVITY * rl.GetFrameTime() // Gravity
     p.vel.x = p.vel.x / (1 + 10 * rl.GetFrameTime()) // Friction
@@ -34,21 +33,15 @@ player_update :: proc(p: ^Player) {
     if vinp == -1.0 && entity_on_tile(p, &tiles) {
         p.vel.y = -JUMPVEL
 
-        jumped = true
+        p.jumped = true
     }
 
-    if vinp == 1.0 && p.vel.y < TERMVEL && jumped {
+    if vinp == 1.0 && p.vel.y < TERMVEL && p.jumped {
         p.vel.y = TERMVEL
     }
 
     p.vel.x += 100 * hinp
     p.vel.x = clamp(p.vel.x, -100, 100)
-    // p.vel.x *= 0.99
-
-    // p.vel.x *= rl.GetFrameTime()
-    // p.vel.y *= rl.GetFrameTime()
-    // p.vel.y
-    // p.vel = p.vel
     
     vdir: f32 = math.sign(p.vel.y)
     if p.vel.y != 0 {
@@ -94,21 +87,6 @@ player_update :: proc(p: ^Player) {
 
 
     p.pos = p.pos + p.vel * rl.GetFrameTime()
-
-    
-
-    // jump_cooldown -= rl.GetFrameTime()
-
-    // if vdir == -1 && entity_on_tile(p, &tiles) && jump_cooldown < 0 {
-    //     jump_cooldown = 0.05
-    //     vel += -100
-    // } else if entity_on_tile(p, &tiles) {
-    //     vel = 0
-    // }
-
-    // if !entity_on_tile(p, &tiles) {
-    //     vel += gravity * rl.GetFrameTime()
-    // }
 }
 
 player_check_collisions :: proc(p: ^Player) {
@@ -116,7 +94,8 @@ player_check_collisions :: proc(p: ^Player) {
 }
 
 player_render :: proc(using p: ^Player) {
-    base_render(p, palettes[gs.palette][1])
-    rl.DrawTexture(p.flag, i32(pos.x - size.x / 2), i32(pos.y - size.y / 2), palettes[gs.palette][2])
+    // base_render(p, palettes[gs.palette][1])
+    rl.DrawTextureRec(p.sprite, {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][1])
+    rl.DrawTextureRec(p.flag, {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][2])
 }
 // 0.211

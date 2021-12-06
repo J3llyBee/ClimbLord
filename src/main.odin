@@ -26,8 +26,10 @@ palettes := [?][4]rl.Color {
     { hexcol(0x565656ff), hexcol(0xe58fadff), hexcol(0xad5cd6ff), hexcol(0xf7efeeff) },
 }
 
-room_width: = 13
-room_height: = 20
+GameState := "GAME"
+
+room_width := 13
+room_height := 20
 
 main :: proc() {
     when ODIN_OS == "darwin" {
@@ -45,7 +47,7 @@ main :: proc() {
     }
 
 
-    gs.room = room_new(15, 15, 50)
+    gs.room = room_new(16, 31, 60)
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
@@ -56,13 +58,22 @@ main :: proc() {
     // gs.player.flag.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
 
     tile_sprites = map[TileType][]rl.Texture {
-        TileType.BASIC = []rl.Texture{ load_texture("tile.png") },
+        TileType.BASIC = []rl.Texture{ load_texture("lone.png"), load_texture("nuble.png"), load_texture("side.png"), load_texture("corner.png"), load_texture("middle.png") },
     }
 
     for !rl.WindowShouldClose() {
         rl.PollInputEvents()
-
-        update()
+        switch GameState {
+            case "MENU":
+                // menu screen
+                break
+            case "GAME":
+                update()
+                break
+            case "OPTIONS":
+                // option screen
+                break
+        }
     }
 }
 
