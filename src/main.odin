@@ -30,13 +30,13 @@ room_height: = 20
 gravity: f32 = 100
 
 main :: proc() {
-    rl.InitWindow(224 * 4, 224 * 4, "ClimbLord")
+    rl.InitWindow(240 * 4, 240 * 4, "ClimbLord")
 
     gs.palette = 3
 
     gs.camera.zoom = 4
 
-    gs.room = room_new(13, 13, 50)
+    gs.room = room_new(15, 15, 50)
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
