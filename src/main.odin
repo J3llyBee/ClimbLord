@@ -22,6 +22,7 @@ palettes := [?][4]rl.Color {
     { hexcol(0x1b0326ff), hexcol(0xba5044ff), hexcol(0x7a1c4bff), hexcol(0xeff9d6ff) },
     { hexcol(0x000000ff), hexcol(0x6772a9ff), hexcol(0x3a3277ff), hexcol(0xffffffff) },
     { hexcol(0x300030ff), hexcol(0xf89020ff), hexcol(0x602878ff), hexcol(0xf8f088ff) },
+    { hexcol(0x565656ff), hexcol(0xe58fadff), hexcol(0xad5cd6ff), hexcol(0xf7efeeff) },
 }
 
 room_width: = 13
@@ -32,7 +33,7 @@ vel: f32 = 0
 main :: proc() {
     rl.InitWindow(224 * 4, 224 * 4, "ClimbLord")
 
-    gs.palette = 3
+    gs.palette = 4
 
     gs.camera.zoom = 4
 
