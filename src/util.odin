@@ -1,7 +1,7 @@
 package main
 
 import rl "vendor:raylib"
-import "core:math"
+
 
 load_texture :: proc($path: string) -> rl.Texture2D {
 	data := #load("../res/" + path)
@@ -27,8 +27,4 @@ check_room :: proc(x, i: int) {
             ordered_remove(&gs.room, a)
         }
     }
-}
-
-length_between :: proc(a, b: vec2) -> f32 {
-	return math.sqrt_f32(math.pow_f32((a.x - b.x), 2) + math.pow_f32((a.y - b.y), 2))
 }
