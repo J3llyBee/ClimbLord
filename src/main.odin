@@ -8,7 +8,7 @@ import rl "vendor:raylib"
 
 State :: struct {
     player: Player,
-    room: [dynamic]Tile,
+    room: ^Room,
     camera: rl.Camera2D,
     palette: int,
     switched: bool,
@@ -36,14 +36,7 @@ main :: proc() {
 
     gs.camera.zoom = 4
 
-
-
-    for a := 0; a < room_height; a += 3 {
-        for i in 0..room_width {
-            append_elem(&gs.room, tile_new({16 * f32(i) + 8, 216 - f32(a) * 16}, load_texture("tile.png")))
-        }
-    }
-    make_path()
+    gs.room = room_new(20, 20, 50)
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
@@ -57,26 +50,6 @@ main :: proc() {
         rl.PollInputEvents()
 
         update()
-    }
-}
-
-render_room :: proc(room: ^[dynamic]Tile) {
-    for i in room {
-        entity_render(&i, palettes[gs.palette][3])
-    }
-}
-
-make_path :: proc() {
-    for i := 0; i < room_height; i += 3 {
-        RND: i32 = rl.GetRandomValue(0, i32(room_width))
-        check_room(int(RND), i)
-        numb: int = coinflip(-1, 1)
-        if RND + i32(numb) <= i32(room_width) && RND + i32(numb) >= 0 {
-            check_room(int(RND) + int(numb), i)
-        } else {
-            check_room(int(RND) + int(numb * -1), i)
-        }
-
     }
 }
 
@@ -101,7 +74,7 @@ update :: proc() {
         rl.BeginMode2D(gs.camera)
             entity_render(&gs.player, palettes[gs.palette][1])
             entity_render(&gs.player.flag, palettes[gs.palette][2])
-            render_room(&gs.room)
+            room_render(gs.room)
 
             player_update(&gs.player)
         rl.EndMode2D()

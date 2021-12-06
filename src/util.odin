@@ -21,14 +21,6 @@ hexcol :: #force_inline proc(x: u32) -> (res: rl.Color) {
 	return
 }
 
-check_room :: proc(x, i: int) {
-    for a in 0..<len(gs.room) {
-        if gs.room[a].pos.x == (16 * f32(x) + 8) && gs.room[a].pos.y == 216 - f32(i) * 16 {
-            ordered_remove(&gs.room, a)
-        }
-    }
-}
-
 sign_rect :: proc(rect: ^rl.Rectangle) {
 	if rect.width < 0 {
 		rect.x += rect.width
