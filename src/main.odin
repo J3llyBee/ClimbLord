@@ -28,7 +28,6 @@ palettes := [?][4]rl.Color {
 room_width: = 13
 room_height: = 20
 gravity: f32 = 100
-vel: f32 = 0
 
 main :: proc() {
     rl.InitWindow(224 * 4, 224 * 4, "ClimbLord")
@@ -46,16 +45,13 @@ main :: proc() {
     }
     make_path()
 
-    gs.player.pos = {100, 0}
+    gs.player.pos = {100, 110}
+    gs.player.vel = {0, 0}
     gs.player.sprite = load_texture("amon.png")
     gs.player.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
 
     gs.player.flag.sprite = load_texture("flag.png")
     gs.player.flag.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
-
-    for i in 0..room_width {
-        append_elem(&gs.room, tile_new({16 * f32(i) + 8, 216 - f32(1) * 16}, load_texture("tile.png")))
-    }
 
     for !rl.WindowShouldClose() {
         rl.PollInputEvents()
@@ -85,8 +81,6 @@ make_path :: proc() {
 }
 
 update :: proc() {
-    v := fmt.tprintf("%f", vel)
-    cstr := strings.unsafe_string_to_cstring(v)
 
     // fmt.println(rl.GetFrameTime())\
 
@@ -98,8 +92,8 @@ update :: proc() {
         gs.switch_timout = 0.5
     }
 
-    player_update(&gs.player)
-    gs.camera.offset.y += 50 * rl.GetFrameTime()
+    
+    // gs.camera.offset.y += 50 * rl.GetFrameTime()
 
     rl.BeginDrawing()
         rl.ClearBackground(palettes[gs.palette][gs.switched ? 3 : 0])
@@ -108,9 +102,10 @@ update :: proc() {
             entity_render(&gs.player, palettes[gs.palette][1])
             entity_render(&gs.player.flag, palettes[gs.palette][2])
             render_room(&gs.room)
+
+            player_update(&gs.player)
         rl.EndMode2D()
 
         rl.DrawFPS(0, 0)
-        rl.DrawText(cstr, 100, 100, 20, rl.BLACK)
     rl.EndDrawing()
 }

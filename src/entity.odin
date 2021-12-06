@@ -17,7 +17,7 @@ Dir :: enum {
 }
 
 entity_get_rec :: proc(using e: ^Entity) -> rl.Rectangle {
-    return rl.Rectangle { pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 1, size.x - 1, size.y - 1 }
+    return rl.Rectangle { pos.x - size.x / 2, pos.y - size.y / 2, size.x, size.y }
 }
 
 entity_check_col_single :: proc(e1, e2: ^Entity) -> bool {
@@ -31,6 +31,30 @@ entity_check_col_multi :: proc(e1: ^Entity, es: ^[]$T) -> bool {
 
     return false
 }
+
+rect_check_col_single :: proc(e1: rl.Rectangle, e2: ^Entity) -> bool {
+    return rl.CheckCollisionRecs(e1, entity_get_rec(e2))
+}
+
+rect_check_col_multi :: proc(e1: rl.Rectangle, es: ^[]$T) -> bool {
+    for i in es {
+        if rect_check_col_single(e1, &i) do return true
+    }
+
+    return false
+}
+
+rect_get_col_rec_multi :: #force_inline proc(e1: rl.Rectangle, es: ^[]$T) -> [dynamic]Tile {
+    cols := make([dynamic]Tile, context.temp_allocator)
+
+    for i in es {
+        if rect_check_col(e1, &i) do append_elem(&cols, i)
+    }
+
+    return cols
+}
+
+rect_check_col :: proc{rect_check_col_single, rect_check_col_multi}
 
 entity_check_col :: proc{entity_check_col_single, entity_check_col_multi}
 

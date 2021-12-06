@@ -28,3 +28,14 @@ check_room :: proc(x, i: int) {
         }
     }
 }
+
+sign_rect :: proc(rect: ^rl.Rectangle) {
+	if rect.width < 0 {
+		rect.x += rect.width
+		rect.width = abs(rect.width)
+	}
+	if rect.height < 0 {
+		rect.y += rect.height
+		rect.height = abs(rect.height)		
+	}
+}
