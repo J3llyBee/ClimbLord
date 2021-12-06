@@ -15,13 +15,8 @@ Player :: struct {
 player_update :: proc(p: ^Player) {
     tiles := room_get_tiles(gs.room)
 
-
     hdir: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
     vdir: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
-
-    // hspd += 100 * hdir * rl.GetFrameTime()
-
-
 
     p.vel.x = 0
     p.vel.x += 100 * hdir * rl.GetFrameTime()
