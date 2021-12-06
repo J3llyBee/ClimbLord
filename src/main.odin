@@ -3,6 +3,7 @@ package main
 import "core:fmt"
 import "core:time"
 import "core:strings"
+import "core:intrinsics"
 
 import rl "vendor:raylib"
 
@@ -27,7 +28,6 @@ palettes := [?][4]rl.Color {
 
 room_width: = 13
 room_height: = 20
-gravity: f32 = 100
 
 main :: proc() {
     when ODIN_OS == "darwin" {
@@ -50,7 +50,7 @@ main :: proc() {
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
     gs.player.sprite = load_texture("amon.png")
-    gs.player.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
+    gs.player.size = {f32(gs.player.sprite.width) - 2, f32(gs.player.sprite.height) - 0.5}
 
     gs.player.flag = load_texture("flag.png")
     // gs.player.flag.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}

@@ -1,5 +1,7 @@
 package main
 
+import "core:intrinsics"
+
 import rl "vendor:raylib"
 
 Entity :: struct {
@@ -29,7 +31,9 @@ entity_get_rect :: proc{entity_get_rect_e, entity_get_rect_r}
 
 // Check For Entity Collisions
 
-entity_check_col_single :: proc(e1: $E, e2: $T) -> bool {
+entity_check_col_single :: proc(e1: $E, e2: $T) -> bool
+    where !intrinsics.type_is_indexable(intrinsics.type_elem_type(E)) &&
+          !intrinsics.type_is_indexable(intrinsics.type_elem_type(T)) {
     return rl.CheckCollisionRecs(entity_get_rect(e1), entity_get_rect(e2))
 }
 
@@ -57,9 +61,11 @@ entity_get_cols :: #force_inline proc(e1: rl.Rectangle, es: ^[]$T) -> [dynamic]T
 
 // Check if Player on Ground
 
-entity_on_tile_single :: proc(e1: $E, e2: $T) -> bool {
+entity_on_tile_single :: proc(e1: $E, e2: $T) -> bool
+    where !intrinsics.type_is_indexable(intrinsics.type_elem_type(E)) &&
+          !intrinsics.type_is_indexable(intrinsics.type_elem_type(T)) {
     rec := entity_get_rect(e1)
-    rec.height += 1
+    rec.height += 2
     rec.x += 1
     rec.width -= 2
 

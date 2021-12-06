@@ -17,6 +17,13 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 
 	room_random_fill(r, fill)
 
+	// for x in 0..<r.width {
+	// 	r.inner[14 * r.height + x] = tile_new({f32(x) * 16 + 8, f32(14) * 16 + 8}) 
+	// }
+
+	// r.inner[13 * r.height + 6] = tile_new({f32(6) * 16 + 8, f32(13) * 16 + 8}) 
+	// r.inner[12 * r.height + 6] = tile_new({f32(6) * 16 + 8, f32(12) * 16 + 8}) 
+
 	for y in 0..<r.height {
         for x in 0..<r.width {
         	cnt := room_get_neighbours(r, x, y)

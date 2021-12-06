@@ -1,10 +1,12 @@
 package main
 
 import "core:fmt"
+import "core:math"
 
 import rl "vendor:raylib"
 
-jump_cooldown: f32 = 0.05
+jump_cooldown: f32 = 0.0
+jumped := false
 
 Player :: struct {
     using entity: Entity,
@@ -14,51 +16,86 @@ Player :: struct {
     vel: vec2,
 }
 
+GRAVITY: f32 = (2.0 * 36.0) / math.pow_f32(0.5, 2)
+JUMPVEL: f32 = math.sqrt(2 * GRAVITY * 36)
+TERMVEL: f32 = math.sqrt(math.pow(JUMPVEL, 2) + 2 * GRAVITY)
+
 player_update :: proc(p: ^Player) {
     tiles := room_get_tiles(gs.room)
 
-    hdir: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
-    vdir: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
+    hinp: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
+    vinp: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
 
-    p.vel.x = 0
-    p.vel.x += 100 * hdir * rl.GetFrameTime()
+    jump_cooldown -= rl.GetFrameTime()
 
-    if p.vel.x != 0 {
-        xcol := rl.Rectangle {p.pos.x, p.pos.y - p.size.y / 2, p.vel.x + (p.size.x * hdir), p.size.y}
-        sign_rect(&xcol)
-        if entity_check_col_multi(xcol, &tiles) {
-            cols := entity_get_cols(xcol, &tiles)
-            current := abs(p.vel.x)
-            for i in &cols {
-                dist := length_between({p.pos.x, 0}, {i.pos.x, 0}) - (i.size.x / 2 + p.size.x / 2)
-                if dist < current {
-                    current = dist
-                }
-            }
-            p.vel.x = current * hdir
-        }
+    p.vel.y = p.vel.y + GRAVITY * rl.GetFrameTime() // Gravity
+    p.vel.x = p.vel.x / (1 + 10 * rl.GetFrameTime()) // Friction
+
+    if vinp == -1.0 && entity_on_tile(p, &tiles) {
+        p.vel.y = -JUMPVEL
+
+        jumped = true
     }
-    p.pos.x += p.vel.x
 
-    p.vel.y = 0
-    p.vel.y += 100 * vdir * rl.GetFrameTime()
+    if vinp == 1.0 && p.vel.y < TERMVEL && jumped {
+        p.vel.y = TERMVEL
+    }
 
+    p.vel.x += 100 * hinp
+    p.vel.x = clamp(p.vel.x, -100, 100)
+    // p.vel.x *= 0.99
+
+    // p.vel.x *= rl.GetFrameTime()
+    // p.vel.y *= rl.GetFrameTime()
+    // p.vel.y
+    // p.vel = p.vel
+    
+    vdir: f32 = math.sign(p.vel.y)
     if p.vel.y != 0 {
-        ycol := rl.Rectangle {p.pos.x - p.size.x / 2, p.pos.y, p.size.x, p.vel.y + (p.size.y * vdir)}
+        ycol := rl.Rectangle {p.pos.x - p.size.x / 2, p.pos.y, p.size.x, (p.size.y / 2 + 2) * vdir + (p.vel.y * rl.GetFrameTime())}
         sign_rect(&ycol)
-        if entity_check_col_multi(ycol, &tiles) {
+
+        // rl.DrawRectangleRec(ycol, rl.BLACK)
+        if entity_check_col(ycol, &tiles) {
             cols := entity_get_cols(ycol, &tiles)
-            current := abs(p.vel.y)
+            current := abs(p.pos.y)
             for i in &cols {
-                dist := length_between({0, p.pos.y}, {0, i.pos.y}) - (i.size.y / 2 + p.size.y / 2)
+                dist := abs(length_between({0, p.pos.y}, {0, i.pos.y}) - (i.size.y / 2 + p.size.y / 2))
                 if dist < current {
                     current = dist
                 }
             }
-            p.vel.y = current * vdir
+
+            p.vel.y = 0
+            p.pos.y += current * vdir
         }
     }
-    p.pos.y += p.vel.y
+
+    hdir: f32 = math.sign(p.vel.x)
+    if p.vel.x != 0 {
+        xcol := rl.Rectangle {p.pos.x, p.pos.y - p.size.y / 2, p.size.x / 2 * hdir + (p.vel.x * rl.GetFrameTime()), p.size.y}
+        sign_rect(&xcol)
+
+        // rl.DrawRectangleRec(xcol, rl.BLACK)
+        if entity_check_col(xcol, &tiles) {
+            cols := entity_get_cols(xcol, &tiles)
+            current := abs(p.pos.x)
+            for i in &cols {
+                dist := abs(length_between({p.pos.x, 0}, {i.pos.x, 0}) - (i.size.x / 2 + p.size.x / 2))
+                if dist < current {
+                    current = dist
+                }
+            }
+
+            p.vel.x = 0
+            p.pos.x += current * hdir
+        }
+    }
+
+
+    p.pos = p.pos + p.vel * rl.GetFrameTime()
+
+    
 
     // jump_cooldown -= rl.GetFrameTime()
 
@@ -72,6 +109,10 @@ player_update :: proc(p: ^Player) {
     // if !entity_on_tile(p, &tiles) {
     //     vel += gravity * rl.GetFrameTime()
     // }
+}
+
+player_check_collisions :: proc(p: ^Player) {
+
 }
 
 player_render :: proc(using p: ^Player) {
