@@ -46,6 +46,7 @@ main :: proc() {
         gs.camera.zoom = 4
     }
 
+    rl.InitAudioDevice()
 
     gs.room = room_new(16, 31, 60)
 

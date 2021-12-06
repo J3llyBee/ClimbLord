@@ -32,7 +32,7 @@ player_update :: proc(p: ^Player) {
 
     if vinp == -1.0 && entity_on_tile(p, &tiles) {
         p.vel.y = -JUMPVEL
-
+        rl.PlaySound(load_sound("jump.wav"))
         p.jumped = true
     }
 
