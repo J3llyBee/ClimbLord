@@ -17,25 +17,25 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 	r.width = width
 	r.height = height
 
-	room_random_fill(r, fill)
+	// room_random_fill(r, fill)
 
 	room_gen_walls(r)
-	// room_fill(r)
+	room_fill(r)
 	
-	for y in 0..<r.height {
-        for x in 0..<r.width {
-        	cnt := room_get_neighbours(r, x, y)
+	// for y in 0..<r.height {
+ //        for x in 0..<r.width {
+ //        	cnt := room_get_neighbours(r, x, y)
 
-        	if cnt > 5 {
-        		if r.inner[y * r.width + x] == nil do r.inner[y * r.width + x] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}) 
-        	} else if cnt < 4 {
-        		if r.inner[y * r.width + x] != nil {
-        			free(r.inner[y * r.width + x])
-        			r.inner[y * r.width + x] = nil
-        		}
-        	}
-        }
-    }
+ //        	if cnt > 5 {
+ //        		if r.inner[y * r.width + x] == nil do r.inner[y * r.width + x] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}) 
+ //        	} else if cnt < 4 {
+ //        		if r.inner[y * r.width + x] != nil {
+ //        			free(r.inner[y * r.width + x])
+ //        			r.inner[y * r.width + x] = nil
+ //        		}
+ //        	}
+ //        }
+ //    }
 
     room_carve_path(r)
 

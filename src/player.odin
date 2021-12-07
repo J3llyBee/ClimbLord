@@ -68,6 +68,8 @@ player_update :: proc(p: ^Player) {
         }
     }
 
+    p.pos.y = p.pos.y + p.vel.y * rl.GetFrameTime()
+
     hdir: f32 = math.sign(p.vel.x)
     if p.vel.x != 0 {
         xcol := rl.Rectangle {p.pos.x, p.pos.y - p.size.y / 2, p.size.x / 2 * hdir + (p.vel.x * rl.GetFrameTime()), p.size.y}
@@ -90,7 +92,7 @@ player_update :: proc(p: ^Player) {
     }
 
 
-    p.pos = p.pos + p.vel * rl.GetFrameTime()
+    p.pos.x = p.pos.x + p.vel.x * rl.GetFrameTime()
 }
 
 player_check_collisions :: proc(p: ^Player) {
