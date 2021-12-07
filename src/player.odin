@@ -100,7 +100,7 @@ player_check_collisions :: proc(p: ^Player) {
 player_render :: proc(using p: ^Player) {
     // base_render(p, palettes[gs.palette][1])
     // rl.DrawTextureRec(p.sprite[p.ci], {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][1])
-    texatls_render(p.sprite, {pos.x - size.x / 2, pos.y - size.y / 2, 16, 16}, int(p.ci), palettes[gs.palette][1])
+    texatls_render(p.sprite, {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), palettes[gs.palette][1])
     rl.DrawTextureRec(p.flag, {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][2])
 }
 // 0.211
