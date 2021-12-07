@@ -29,29 +29,14 @@ room_new :: proc(width, height, fill: int) -> ^Room {
         			r.inner[y * r.width + x] = nil
         		}
         	}
+        }
+    }
 
+    for y in 0..<r.height {
+        for x in 0..<r.width {
         	if r.inner[y * r.width + x] != nil {
-        		cnt = room_get_ring(r, x, y)
-
-        		fmt.println(cnt)
-
-        		switch cnt {
-        			case 0:
-        				r.inner[y * r.width + x].sprite_index = 0
-        			case 1:
-        				r.inner[y * r.width + x].sprite_index = 1
-        			case 2:
-        				b := room_get_ring_num(r, x, y)
-
-        				if b == 0b1010 || b == 0b0101 {
-        					r.inner[y * r.width + x].sprite_index = 2
-        				} else {
-        					r.inner[y * r.width + x].sprite_index = 3
-        				}
-        			case:
-        				r.inner[y * r.width + x].sprite_index = 4
-        		}
-        	}
+        		r.inner[y * r.width + x].sprite_index = int(room_get_ring_num(r, x, y))
+    		}
         }
     }
 
@@ -95,7 +80,7 @@ room_get_ring :: proc(r: ^Room, x, y: int) -> int {
 }
 
 room_get_ring_num :: proc(r: ^Room, x, y: int) -> u8 {
-	return 0 | (r.inner[p2i(r, x - 1, y)] != nil ? 0b1000 : 0) | (r.inner[p2i(r, x, y - 1)] != nil ? 0b0100 : 0) | (r.inner[p2i(r, x + 1, y)] != nil ? 0b0010 : 0) | (r.inner[p2i(r, x, y + 1)] != nil ? 0b0100 : 0)
+	return 0 | (r.inner[p2i(r, x - 1, y)] != nil ? 0b1000 : 0) | (r.inner[p2i(r, x, y - 1)] != nil ? 0b0100 : 0) | (r.inner[p2i(r, x + 1, y)] != nil ? 0b0010 : 0) | (r.inner[p2i(r, x, y + 1)] != nil ? 0b0001 : 0)
 }
 
 room_get_tiles :: #force_inline proc(r: ^Room) -> []Tile {

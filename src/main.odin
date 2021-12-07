@@ -59,7 +59,12 @@ main :: proc() {
     // gs.player.flag.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
 
     tile_sprites = map[TileType][]rl.Texture {
-        TileType.BASIC = []rl.Texture{ load_texture("lone.png"), load_texture("nuble.png"), load_texture("side.png"), load_texture("corner.png"), load_texture("middle.png") },
+        TileType.BASIC = []rl.Texture{
+            load_texture("ground/0.png"),  load_texture("ground/1.png"),  load_texture("ground/2.png"),  load_texture("ground/3.png"),
+            load_texture("ground/4.png"),  load_texture("ground/5.png"),  load_texture("ground/6.png"),  load_texture("ground/7.png"),
+            load_texture("ground/8.png"),  load_texture("ground/9.png"),  load_texture("ground/10.png"), load_texture("ground/11.png"),
+            load_texture("ground/12.png"), load_texture("ground/13.png"), load_texture("ground/14.png"), load_texture("ground/15.png"),
+        },
     }
 
     for !rl.WindowShouldClose() {
