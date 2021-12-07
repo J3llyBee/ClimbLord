@@ -9,6 +9,8 @@ Room :: struct {
 	width, height: int,
 }
 
+// TODO: redo all the generation
+
 room_new :: proc(width, height, fill: int) -> ^Room {
 	r := new(Room)
 	r.inner = make([]^Tile, height * width)
@@ -17,6 +19,9 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 
 	room_random_fill(r, fill)
 
+	room_gen_walls(r)
+	// room_fill(r)
+	
 	for y in 0..<r.height {
         for x in 0..<r.width {
         	cnt := room_get_neighbours(r, x, y)
@@ -32,6 +37,10 @@ room_new :: proc(width, height, fill: int) -> ^Room {
         }
     }
 
+    room_carve_path(r)
+
+    room_gen_walls(r)
+
     for y in 0..<r.height {
         for x in 0..<r.width {
         	if r.inner[y * r.width + x] != nil {
@@ -43,6 +52,34 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 	return r
 }
 
+room_gen_tile :: proc(r: ^Room, x, y: int) {
+	if r.inner[p2i(r, x, y)] != nil do return
+
+	r.inner[p2i(r, x, y)] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}) 
+}
+
+room_delete_tile :: proc(r: ^Room, x, y: int) {
+	if r.inner[p2i(r, x, y)] == nil do return
+
+	free(r.inner[p2i(r, x, y)])
+	r.inner[p2i(r, x, y)] = nil
+}
+
+room_gen_walls :: proc(r: ^Room) {
+	for y in 0..<r.height {
+        room_gen_tile(r, 0, y)
+        room_gen_tile(r, 14, y)
+    }
+}
+
+room_fill :: proc(r: ^Room) {
+	for y in 0..<r.height {
+        for x in 0..<r.width {
+        	r.inner[y * r.width + x] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}) 
+        }
+    }
+}
+
 room_random_fill :: proc(r: ^Room, fill: int) {
 	for y in 0..<r.height {
         for x in 0..<r.width {
@@ -52,6 +89,22 @@ room_random_fill :: proc(r: ^Room, fill: int) {
         		r.inner[y * r.width + x] = nil
         	}
         }
+    }
+}
+
+room_carve_path :: proc(r: ^Room) {
+	x := r.width / 2
+
+	for y in 0..<r.height {
+		// size := int(rand.int31_max(i32(r.width)) / 2)
+		size := 2
+
+		for dx in -size..size {
+			free(r.inner[p2i(r, x + dx, y)])
+        	r.inner[p2i(r, x + dx, y)] = nil
+		}
+
+		x += rand.int31_max(2) > 0 ? -1 : 1
     }
 }
 
@@ -97,11 +150,11 @@ p2i :: proc(r: ^Room, x, y: int) -> int {
 	x := x
 	y := y
 
-	if x < 0 do x = r.width + x
-	else if x > r.width - 1 do x = x - r.width
+	if x < 0 do x = r.width - 1 + x
+	else if x >= r.width do x = x - r.width
 
-	if y < 0 do y = r.height + y
-	else if y > r.height - 1 do y = y - r.height
+	if y < 0 do y = r.height - 1 + y
+	else if y >= r.height do y = y - r.height
 
-	return y * r.width + x
+	return clamp(y * r.width + x, 0, r.width * r.height)
 }

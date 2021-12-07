@@ -48,7 +48,7 @@ main :: proc() {
 
     rl.InitAudioDevice()
 
-    gs.room = room_new(16, 31, 60)
+    gs.room = room_new(15, 15, 65)
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
