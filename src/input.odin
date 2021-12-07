@@ -12,6 +12,7 @@ inputs := Inputs {
 	"LEFT" = {rl.KeyboardKey.A, rl.KeyboardKey.LEFT},
 	"RIGHT" = {rl.KeyboardKey.D, rl.KeyboardKey.RIGHT},
 	"SWITCH" = {rl.KeyboardKey.Q},
+	"PALETTE" = {rl.KeyboardKey.E},
 }
 
 @private

@@ -52,8 +52,8 @@ main :: proc() {
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
-    gs.player.sprite = load_texture("amon.png")
-    gs.player.size = {f32(gs.player.sprite.width) - 2, f32(gs.player.sprite.height) - 0.5}
+    gs.player.sprite = texatls_new(load_texture("player/idle.png"), 16, 16)
+    gs.player.size = {16 - 2, 16 - 0.5}
 
     gs.player.flag = load_texture("flag.png")
     // gs.player.flag.size = {f32(gs.player.sprite.width), f32(gs.player.sprite.height)}
@@ -83,7 +83,15 @@ main :: proc() {
     }
 }
 
+cooldown: f32 = 0
+
 update :: proc() {
+    cooldown -= rl.GetFrameTime()
+
+    if input_is_down("PALETTE") && cooldown < 0 {
+        gs.palette = gs.palette + 1 > len(palettes) - 1 ? 0 : gs.palette + 1
+        cooldown = 0.1
+    }
 
     // fmt.println(rl.GetFrameTime())\
 

@@ -7,7 +7,8 @@ import rl "vendor:raylib"
 
 Player :: struct {
     using entity: Entity,
-    sprite: rl.Texture,
+    ci: f32,
+    sprite: ^Texatls,
     flag: rl.Texture,
 
     vel: vec2,
@@ -20,6 +21,9 @@ JUMPVEL: f32 = math.sqrt(2 * GRAVITY * 36)
 TERMVEL: f32 = math.sqrt(math.pow(JUMPVEL, 2) + 2 * GRAVITY)
 
 player_update :: proc(p: ^Player) {
+    p.ci += rl.GetFrameTime() * 4
+    if p.ci > 4 do p.ci = 0
+
     tiles := room_get_tiles(gs.room)
 
     hinp: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
@@ -95,7 +99,8 @@ player_check_collisions :: proc(p: ^Player) {
 
 player_render :: proc(using p: ^Player) {
     // base_render(p, palettes[gs.palette][1])
-    rl.DrawTextureRec(p.sprite, {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][1])
+    // rl.DrawTextureRec(p.sprite[p.ci], {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][1])
+    texatls_render(p.sprite, {pos.x - size.x / 2, pos.y - size.y / 2, 16, 16}, int(p.ci), palettes[gs.palette][1])
     rl.DrawTextureRec(p.flag, {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][2])
 }
 // 0.211
