@@ -14,8 +14,10 @@ Room :: struct {
 }
 
 rooms := [?][]u8 {
-	#load("../room1"),
-	#load("../chez.clr"),
+	// #load("../room1"),
+	// #load("../chez.clr"),
+	#load("../room2"),
+	#load("../room3"),
 }
 
 // TODO: redo all the generation
@@ -36,12 +38,10 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 
 	// END OF EDITOR
 
-	room_init(r, 0, #load("../room1"))
-	room_init(r, 1, #load("../room1"))
-	room_init(r, 2, #load("../room1"))
+	for i in 0..<3 do room_init(r, i, rooms[rand.int_max(len(rooms))])
 
 	// Base Level
-	room_init(r, 3, #load("../chez.clr"))
+	room_init(r, 3, #load("../room0"))
 
     room_update_sprites(r)
 
@@ -197,8 +197,8 @@ room_init :: proc(r: ^Room, y: int, data: []u8) {
 current_tile: u8 = 1
 
 room_editor :: proc() {
-    posx := int(f32(rl.GetMouseX()) / (240 * 3) * 15)
-    posy := int(f32(rl.GetMouseY()) / (240 * 3) * 15)
+    posx := int(f32(rl.GetMouseX()) / (240 * 4) * 15)
+    posy := int(f32(rl.GetMouseY()) / (240 * 4) * 15)
 
     if rl.IsMouseButtonDown(.LEFT) {
         room_gen_tile(gs.room, posx, posy, TileType(current_tile))

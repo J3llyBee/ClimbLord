@@ -172,6 +172,8 @@ menu :: proc() {
 }
 
 update :: proc() {
+    if gs.player.pos.y < 50 do gs.scolling = true
+
     room_update(gs.room)
     if rl.IsKeyDown(rl.KeyboardKey.B) {
         room_insert(gs.room, 2, #load("../room1"))
@@ -195,7 +197,7 @@ update :: proc() {
     }
 
     
-    if !gs.scolling do gs.camera.target.y -= 35 * rl.GetFrameTime()
+    if gs.scolling do gs.camera.target.y -= 35 * rl.GetFrameTime()
     clear_background()
 
     rl.BeginMode2D(gs.camera)
