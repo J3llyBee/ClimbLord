@@ -61,10 +61,10 @@ room_update_sprites :: proc(r: ^Room) {
     }
 }
 
-room_gen_tile :: proc(r: ^Room, x, y: int) {
-	if r.inner[p2i(r, x, y)] != nil do return
+room_gen_tile :: proc(r: ^Room, x, y: int, type := TileType.BASIC) {
+	if r.inner[p2i(r, x, y)] != nil do room_delete_tile(r, x, y)
 
-	r.inner[p2i(r, x, y)] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}) 
+	r.inner[p2i(r, x, y)] = tile_new({f32(x) * 16 + 8, f32(y) * 16 + 8}, type) 
 }
 
 room_delete_tile :: proc(r: ^Room, x, y: int) {
@@ -120,7 +120,7 @@ room_carve_path :: proc(r: ^Room) {
 room_render :: proc(r: ^Room) {
 	for y in 0..<r.height {
 		for x in 0..<r.width {
-			if r.inner[y * r.width + x] != nil do tile_render(r.inner[y * r.width + x], palettes[gs.palette][3])
+			if r.inner[y * r.width + x] != nil do tile_render(r.inner[y * r.width + x])
 		}
 	}
 }
@@ -142,7 +142,9 @@ room_get_ring :: proc(r: ^Room, x, y: int) -> int {
 }
 
 room_get_ring_num :: proc(r: ^Room, x, y: int) -> u8 {
-	return 0 | (r.inner[p2i(r, x - 1, y)] != nil ? 0b1000 : 0) | (r.inner[p2i(r, x, y - 1)] != nil ? 0b0100 : 0) | (r.inner[p2i(r, x + 1, y)] != nil ? 0b0010 : 0) | (r.inner[p2i(r, x, y + 1)] != nil ? 0b0001 : 0)
+	t := r.inner[p2i(r, x, y)].type
+
+	return 0 | (r.inner[p2i(r, x - 1, y)] != nil && r.inner[p2i(r, x - 1, y)].type == t ? 0b1000 : 0) | (r.inner[p2i(r, x, y - 1)] != nil && r.inner[p2i(r, x, y - 1)].type == t ? 0b0100 : 0) | (r.inner[p2i(r, x + 1, y)] != nil && r.inner[p2i(r, x + 1, y)].type == t ? 0b0010 : 0) | (r.inner[p2i(r, x, y + 1)] != nil && r.inner[p2i(r, x, y + 1)].type == t ? 0b0001 : 0)
 }
 
 room_get_tiles :: #force_inline proc(r: ^Room) -> []Tile {
@@ -165,39 +167,31 @@ room_dump :: proc(r: ^Room) {
         }
     }
 
-    fmt.print("ENTER PATH: ")
-
-    fname: [64]u8
-    fn, _ := os.read(os.stdin, fname[:])
-
-    os.write_entire_file(string(fname[:fn - 1]), data[:])
+    os.write_entire_file(get_input("ENTER PATH: "), data[:])
 }
 
 room_load :: proc(r: ^Room) {
-	fmt.print("ENTER PATH: ")
-
-    fname: [64]u8
-    fn, _ := os.read(os.stdin, fname[:])
-
-	data, _ := os.read_entire_file(string(fname[:fn - 1]))
+	data, _ := os.read_entire_file(get_input("ENTER PATH: "))
 
 	for y in 0..<r.height {
         for x in 0..<r.width {
             if data[p2i(r, x, y)] == 0 {
             	room_delete_tile(r, x, y)
             } else {
-            	room_gen_tile(r, x, y)
+            	room_gen_tile(r, x, y, TileType(data[p2i(r, x, y)]))
             }
         }
     }
 }
 
+current_tile: u8 = 1
+
 room_editor :: proc() {
-    posx := int(f32(rl.GetMouseX()) / (240 * 3) * 15)
-    posy := int(f32(rl.GetMouseY()) / (240 * 3) * 15)
+    posx := int(f32(rl.GetMouseX()) / (240 * 4) * 15)
+    posy := int(f32(rl.GetMouseY()) / (240 * 4) * 15)
 
     if rl.IsMouseButtonDown(.LEFT) {
-        room_gen_tile(gs.room, posx, posy)
+        room_gen_tile(gs.room, posx, posy, TileType(current_tile))
 
         room_update_sprites(gs.room)
     } else if rl.IsMouseButtonDown(.RIGHT) {
@@ -209,8 +203,16 @@ room_editor :: proc() {
     if rl.IsKeyDown(rl.KeyboardKey.G) {
         room_dump(gs.room)
     }
-}
 
+    rl.GetKeyPressed()
+
+    if rl.IsKeyDown(rl.KeyboardKey.ONE) {
+    	current_tile = 1
+    } else if rl.IsKeyDown(rl.KeyboardKey.TWO) {
+    	current_tile = 2
+    }
+}
+ 
 @(private="file")
 p2i :: proc(r: ^Room, x, y: int) -> int {
 	x := x

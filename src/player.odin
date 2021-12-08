@@ -33,9 +33,13 @@ player_update :: proc(p: ^Player) {
     p.vel.y = p.vel.y + GRAVITY * rl.GetFrameTime() // Gravity
     p.vel.x = p.vel.x / (1 + 10 * rl.GetFrameTime()) // Friction
 
-    if vinp == -1.0 && entity_on_tile(p, &tiles) {
+    if vinp != -1.0 && entity_on_tile(p, &tiles) {
+        p.jumped = false
+    }
+
+    if vinp == -1.0 && entity_on_tile(p, &tiles) && !p.jumped {
         p.vel.y = -JUMPVEL
-        // rl.PlaySound(load_sound("jump.wav"))
+        rl.PlaySound(load_sound("jump.wav"))
         p.jumped = true
     }
 

@@ -1,7 +1,9 @@
 package main
 
-import rl "vendor:raylib"
+import "core:fmt"
+import "core:os"
 
+import rl "vendor:raylib"
 
 load_texture :: proc($path: string) -> rl.Texture2D {
 	data := #load("../res/" + path)
@@ -30,6 +32,10 @@ base_render :: proc(using x: $T, color := rl.WHITE) {
 	rl.DrawTexture(sprite, i32(pos.x - size.x / 2), i32(pos.y - size.y / 2), color)
 }
 
+clear_background :: proc() {
+	rl.ClearBackground(palettes[gs.palette][gs.switched ? 3 : 0])
+}
+
 sign_rect :: proc(rect: ^rl.Rectangle) {
 	if rect.width < 0 {
 		rect.x += rect.width
@@ -38,5 +44,18 @@ sign_rect :: proc(rect: ^rl.Rectangle) {
 	if rect.height < 0 {
 		rect.y += rect.height
 		rect.height = abs(rect.height)		
+	}
+}
+
+get_input :: proc(t: string) -> string {
+	fmt.print(t)
+
+    fname: [64]u8
+    fn, _ := os.read(os.stdin, fname[:])
+
+	when ODIN_OS == "windows" {
+		return string(fname[:fn - 2])
+	} else {
+		return string(fname[:fn - 2])
 	}
 }

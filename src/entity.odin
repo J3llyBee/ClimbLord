@@ -61,15 +61,19 @@ entity_get_cols :: #force_inline proc(e1: rl.Rectangle, es: ^[]$T) -> [dynamic]T
 
 // Check if Player on Ground
 
-entity_on_tile_single :: proc(e1: $E, e2: $T) -> bool
+entity_on_tile_single :: proc(e1: $E, e2: $T) -> (res: bool)
     where !intrinsics.type_is_indexable(intrinsics.type_elem_type(E)) &&
           !intrinsics.type_is_indexable(intrinsics.type_elem_type(T)) {
     rec := entity_get_rect(e1)
     rec.height += 2
     rec.x += 1
     rec.width -= 2
+    
+    res = rl.CheckCollisionRecs(rec, entity_get_rect(e2))    
 
-    return rl.CheckCollisionRecs(rec, entity_get_rect(e2))
+    if res do tile_update(e2)
+
+    return
 }
 
 entity_on_tile_multi :: proc(e1: $E, es: ^[]$T) -> bool {
