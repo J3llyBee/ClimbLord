@@ -2,8 +2,8 @@ package main
 
 import rl "vendor:raylib"
 
-TileType :: enum {
-    BASIC,    
+TileType :: enum u8 {
+    BASIC = 1,    
 }
 
 Tile :: struct {
@@ -19,6 +19,7 @@ tile_new :: #force_inline proc(pos: vec2) -> ^Tile {
     t := new(Tile)
     t.pos = pos
     t.size = { 16, 16 }
+    t.type = .BASIC
     // t.entity = { pos, {f32(sprite.width), f32(sprite.height)}, sprite }
     return t
 }

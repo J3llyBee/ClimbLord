@@ -9,7 +9,6 @@ Player :: struct {
     using entity: Entity,
     ci: f32,
     sprite: ^Texatls,
-    flag: rl.Texture,
 
     vel: vec2,
     jumped: bool,
@@ -29,7 +28,7 @@ player_update :: proc(p: ^Player) {
     hinp: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
     vinp: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
 
-    p.flip = hinp == -1
+    if hinp != 0 do p.flip = hinp == -1
 
     p.vel.y = p.vel.y + GRAVITY * rl.GetFrameTime() // Gravity
     p.vel.x = p.vel.x / (1 + 10 * rl.GetFrameTime()) // Friction
@@ -100,9 +99,7 @@ player_check_collisions :: proc(p: ^Player) {
 }
 
 player_render :: proc(using p: ^Player) {
-    // base_render(p, palettes[gs.palette][1])
-    // rl.DrawTextureRec(p.sprite[p.ci], {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][1])
-    texatls_render(p.sprite, {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), palettes[gs.palette][1])
-    rl.DrawTextureRec(p.flag, {0, 0, p.flip ? -16 : 16, 16}, {pos.x - size.x / 2, pos.y - size.y / 2}, palettes[gs.palette][2])
+    texatls_render(p.sprite, {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), 0, p.flip, palettes[gs.palette][1])
+    texatls_render(p.sprite, {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), 1, p.flip, palettes[gs.palette][2])
 }
 // 0.211

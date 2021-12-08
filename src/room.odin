@@ -3,6 +3,9 @@ package main
 import "core:math/rand"
 import "core:math"
 import "core:fmt"
+import "core:os"
+
+import rl "vendor:raylib"
 
 Room :: struct {
 	inner: []^Tile,
@@ -19,8 +22,10 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 
 	// room_random_fill(r, fill)
 
-	room_gen_walls(r)
-	room_fill(r)
+	room_load(r)
+
+	// room_gen_walls(r)
+	// room_fill(r)
 	
 	// for y in 0..<r.height {
  //        for x in 0..<r.width {
@@ -37,10 +42,16 @@ room_new :: proc(width, height, fill: int) -> ^Room {
  //        }
  //    }
 
-    room_carve_path(r)
+    // room_carve_path(r)
 
-    room_gen_walls(r)
+    // room_gen_walls(r)
 
+    room_update_sprites(r)
+
+	return r
+}
+
+room_update_sprites :: proc(r: ^Room) {
     for y in 0..<r.height {
         for x in 0..<r.width {
         	if r.inner[y * r.width + x] != nil {
@@ -48,8 +59,6 @@ room_new :: proc(width, height, fill: int) -> ^Room {
     		}
         }
     }
-
-	return r
 }
 
 room_gen_tile :: proc(r: ^Room, x, y: int) {
@@ -143,6 +152,63 @@ room_get_tiles :: #force_inline proc(r: ^Room) -> []Tile {
     }
 
     return nt[:]
+}
+
+room_dump :: proc(r: ^Room) {
+    data: [15 * 15]u8
+
+    for y in 0..<r.height {
+        for x in 0..<r.width {
+            if r.inner[p2i(r, x, y)] != nil {
+            	data[p2i(r, x, y)] = u8(r.inner[p2i(r, x, y)].type)
+        	}
+        }
+    }
+
+    fmt.print("ENTER PATH: ")
+
+    fname: [64]u8
+    fn, _ := os.read(os.stdin, fname[:])
+
+    os.write_entire_file(string(fname[:fn - 1]), data[:])
+}
+
+room_load :: proc(r: ^Room) {
+	fmt.print("ENTER PATH: ")
+
+    fname: [64]u8
+    fn, _ := os.read(os.stdin, fname[:])
+
+	data, _ := os.read_entire_file(string(fname[:fn - 1]))
+
+	for y in 0..<r.height {
+        for x in 0..<r.width {
+            if data[p2i(r, x, y)] == 0 {
+            	room_delete_tile(r, x, y)
+            } else {
+            	room_gen_tile(r, x, y)
+            }
+        }
+    }
+}
+
+room_editor :: proc() {
+    posx := int(f32(rl.GetMouseX()) / (240 * 3) * 15)
+    posy := int(f32(rl.GetMouseY()) / (240 * 3) * 15)
+
+    if rl.IsMouseButtonDown(.LEFT) {
+        room_gen_tile(gs.room, posx, posy)
+
+        room_update_sprites(gs.room)
+    } else if rl.IsMouseButtonDown(.RIGHT) {
+        room_delete_tile(gs.room, posx, posy)
+
+        room_update_sprites(gs.room)
+    }
+
+    if rl.IsKeyDown(rl.KeyboardKey.G) {
+        room_dump(gs.room)
+    }
 }
 
 @(private="file")
