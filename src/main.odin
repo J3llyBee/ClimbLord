@@ -14,6 +14,7 @@ State :: struct {
     palette: int,
     switched: bool,
     switch_timout: f32,
+    scolling: bool,
     state: enum {
         MENU,
         GAME,
@@ -69,11 +70,14 @@ main :: proc() {
     }
 
     gs.room = room_new(15, 15, 65)
+    gs.room.bi = 3
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
     gs.player.sprite = texatls_new(load_texture("player/idle.png"), 16, 16)
     gs.player.size = {16 - 2, 16 - 0.5}
+
+    // gs.camera.offset.y = -240 * 3
 
     tile_sprites = map[TileType][]rl.Texture {
         TileType.BASIC = {
@@ -95,7 +99,8 @@ main :: proc() {
         switch gs.state {
             case .MENU:
                 clear_background()
-                menu()
+                // menu()
+                update()
                 break
             case .GAME:
                 clear_background()
@@ -133,6 +138,10 @@ menu :: proc() {
 }
 
 update :: proc() {
+    room_update(gs.room)
+    if rl.IsKeyDown(rl.KeyboardKey.B) {
+        room_insert(gs.room, 2, #load("../room1"))
+    }
     room_editor()
     cooldown -= rl.GetFrameTime()
 
@@ -152,7 +161,7 @@ update :: proc() {
     }
 
     
-    // gs.camera.offset.y += 50 * rl.GetFrameTime()
+    if !gs.scolling do gs.camera.target.y -= 35 * rl.GetFrameTime()
     clear_background()
 
     rl.BeginMode2D(gs.camera)

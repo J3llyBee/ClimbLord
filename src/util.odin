@@ -47,15 +47,15 @@ sign_rect :: proc(rect: ^rl.Rectangle) {
 	}
 }
 
-get_input :: proc(t: string) -> string {
+get_input :: #force_inline proc(t: string) -> string {
 	fmt.print(t)
 
-    fname: [64]u8
+    fname := new([64]u8, context.temp_allocator)
     fn, _ := os.read(os.stdin, fname[:])
 
 	when ODIN_OS == "windows" {
 		return string(fname[:fn - 2])
 	} else {
-		return string(fname[:fn - 2])
+		return string(fname[:fn - 1])
 	}
 }
