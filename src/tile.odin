@@ -41,7 +41,7 @@ tile_is_enemy :: proc(t: TileType) -> bool {
 tile_update :: proc(using t: ^Tile) {
     #partial switch type {
         case .SPIKE:
-            rl.CloseWindow()
+            gs.state = .DEAD
             break
     }
 }

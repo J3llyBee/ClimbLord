@@ -18,13 +18,16 @@ State :: struct {
     state: enum {
         MENU,
         GAME,
-        ALIVE,
+        DEAD,
         OPTIONS,
     },
 }
 
+jump_sfx: rl.Sound
+
 start_button: UI
 option_button: UI
+death_img: rl.Texture2D
 
 gs: State
 
@@ -58,16 +61,25 @@ main :: proc() {
 
     rl.InitAudioDevice()
 
-    start_button.entity = {{100, 100}, {32, 16}}
-    start_button.sprite = load_texture("startbutton.png")
-    start_button.fn = proc() {
-        gs.state = .GAME
+    jump_sfx = load_sound("jump.wav")
+
+    start_button = {
+        entity = {{100, 100}, {32, 16}},
+        sprite = load_texture("startbutton.png"),
+        fn = proc() {
+            gs.state = .GAME
+        },
     }
-    option_button.entity = {{100, 200}, {32, 16}}
-    option_button.sprite = load_texture("startbutton.png")
-    option_button.fn = proc() {
-        gs.state = .OPTIONS
+
+    option_button = {
+        entity = {{100, 200}, {32, 16}},
+        sprite = load_texture("startbutton.png"),
+        fn = proc() {
+            gs.state = .OPTIONS
+        },
     }
+
+    death_img = load_texture("death.png")
 
     gs.room = room_new(15, 15, 65)
     gs.room.bi = 3
@@ -106,8 +118,9 @@ main :: proc() {
                 clear_background()
                 update()
                 break
-            case .ALIVE:
-                // idk
+            case .DEAD:
+                start_button.pos.y = 200
+                dead()
                 break
             case .OPTIONS:
                 clear_background()
@@ -120,6 +133,27 @@ main :: proc() {
 
 
 cooldown: f32 = 0
+
+dead :: proc() {
+    clear_background()
+
+    rl.BeginMode2D(gs.camera)
+        
+        // entity_render(&gs.player, palettes[gs.palette][1])
+        // entity_render(&gs.player.flag, palettes[gs.palette][2])
+        player_render(&gs.player)
+        room_render(gs.room)
+        rl.DrawTexture(death_img, 0, 0, rl.WHITE)
+        rl.DrawText("You died", 50, 50, 32, rl.WHITE)
+        rl.DrawText("Distance: 100m", 62, 100, 16, rl.WHITE)
+
+        button_render(&start_button)
+        button_update(&start_button)
+
+    rl.EndMode2D()
+
+    rl.DrawFPS(0, 0)
+}
 
 menu :: proc() {
     clear_background()

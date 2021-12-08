@@ -39,7 +39,7 @@ player_update :: proc(p: ^Player) {
 
     if vinp == -1.0 && entity_on_tile(p, &tiles) && !p.jumped {
         p.vel.y = -JUMPVEL
-        rl.PlaySound(load_sound("jump.wav"))
+        rl.PlaySound(jump_sfx)
         p.jumped = true
     }
 
@@ -47,7 +47,7 @@ player_update :: proc(p: ^Player) {
         p.vel.y = TERMVEL
     }
 
-    p.vel.x += 100 * hinp
+    p.vel.x += 60 * hinp
     p.vel.x = clamp(p.vel.x, -100, 100)
     
     vdir: f32 = math.sign(p.vel.y)
@@ -60,14 +60,14 @@ player_update :: proc(p: ^Player) {
             cols := entity_get_cols(ycol, &tiles)
             current := abs(p.pos.y)
             for i in &cols {
-                dist := abs(length_between({0, p.pos.y}, {0, i.pos.y}) - (i.size.y / 2 + p.size.y / 2))
+                dist := length_between({0, p.pos.y}, {0, i.pos.y}) - (i.size.y / 2 + p.size.y / 2)
                 if dist < current {
                     current = dist
                 }
             }
 
             p.vel.y = 0
-            p.pos.y += current * vdir
+            p.pos.y += current * vdir - 0.1 * vdir
         }
     }
 
@@ -83,7 +83,7 @@ player_update :: proc(p: ^Player) {
             cols := entity_get_cols(xcol, &tiles)
             current := abs(p.pos.x)
             for i in &cols {
-                dist := abs(length_between({p.pos.x, 0}, {i.pos.x, 0}) - (i.size.x / 2 + p.size.x / 2))
+                dist := length_between({p.pos.x, 0}, {i.pos.x, 0}) - (i.size.x / 2 + p.size.x / 2)
                 if dist < current {
                     current = dist
                 }
