@@ -129,23 +129,24 @@ player_update :: proc(p: ^Player) {
     p.pos.x = p.pos.x + p.vel.x * rl.GetFrameTime()
 
     bh: f32 = (input_is_down("S_RIGHT") ? 1.0 : 0.0) - (input_is_down("S_LEFT") ? 1.0 : 0.0)
-    bv: f32 = (input_is_down("S_UP") ? -1.0 : 0.0)
 
-    if bv != 0 && bh != 0 do bv = 0.0
-
-    if (bh != 0 || bv != 0) && p.bullet_cooldown <= 0.0 {
+    if (bh != 0) && p.bullet_cooldown <= 0.0 {
+        rl.PlaySound(shoot_sfx)
         // bvel: vec2 = ({bh * 0.7, bv * 0.7} + (p.vel == {0.0, 0.0} ? {0.0, 0.0} : vm.normalize(p.vel) * 0.3)) * 100
-        bvel: vec2 = {bh, bv} * 100
+        bvel: vec2 = {bh, 0} * 100
 
-        p.ci = 0
-
-        fmt.println(vec2 {bh * 0.7, bv * 0.7})
-        fmt.println(vm.normalize(p.vel) * 0.3)
-        fmt.println(p.vel)
-        fmt.println(bvel)
+        // fmt.println(vec2 {bh * 0.7, bv * 0.7})
+        // fmt.println(vm.normalize(p.vel) * 0.3)
+        // fmt.println(p.vel)
+        // fmt.println(bvel)
 
         append(&p.bullets, bullet_new(bvel))
         p.bullet_cooldown = 0.56
+
+
+    }
+    if p.pos.y > gs.camera.target.y + 240 + p.size.y / 2 {
+        gs.state = .DEAD
     }
 }
 

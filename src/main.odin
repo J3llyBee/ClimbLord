@@ -26,6 +26,9 @@ State :: struct {
 }
 
 jump_sfx: rl.Sound
+shoot_sfx: rl.Sound
+enemydie_sfx: rl.Sound
+playerdie_sfx: rl.Sound
 
 start_button: UI
 option_button: UI
@@ -64,6 +67,9 @@ main :: proc() {
     rl.InitAudioDevice()
 
     jump_sfx = load_sound("jump.wav")
+    shoot_sfx = load_sound("shoot.wav")
+    enemydie_sfx = load_sound("deathsound.wav")
+    playerdie_sfx = load_sound("playerdeath.wav")
 
     start_button = {
         entity = {{100, 100}, {32, 16}},
@@ -135,7 +141,6 @@ main :: proc() {
                 clear_background()
                 update()
             case .DEAD:
-                start_button.pos.y = 200
                 dead()
             case .OPTIONS:
                 clear_background()
@@ -161,6 +166,7 @@ dead :: proc() {
         rl.DrawText("You died", 50, 50 + i32(gs.camera.target.y), 32, rl.WHITE)
         rl.DrawText("Distance: 100m", 62, 100 + i32(gs.camera.target.y), 16, rl.WHITE)
 
+        start_button.pos.y = gs.camera.target.y + 140
         button_render(&start_button)
         button_update(&start_button)
 

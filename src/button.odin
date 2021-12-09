@@ -10,11 +10,11 @@ UI :: struct {
 }
 
 button_update :: proc(e: ^UI) {
-	if rl.IsMouseButtonDown(.LEFT) && rl.CheckCollisionPointRec({f32(rl.GetMouseX() / 4), f32(rl.GetMouseY() / 4)}, entity_get_rect(e)) {
+	if rl.IsMouseButtonDown(.LEFT) && rl.CheckCollisionPointRec({f32(rl.GetMouseX() / 4), f32(rl.GetMouseY() / 4 + i32(gs.camera.target.y))}, entity_get_rect(e)) {
 		e.fn()
 	}
 	// rl.DrawRectangleRec(entity_get_rect(e), rl.BLACK)
-	rl.DrawCircle(rl.GetMouseX() / 4, rl.GetMouseY() / 4, 2, rl.BLACK)
+	rl.DrawCircle(rl.GetMouseX() / 4, rl.GetMouseY() / 4 + i32(gs.camera.target.y), 2, rl.BLACK)
 }
 
 button_render :: proc(using e: ^UI) {
