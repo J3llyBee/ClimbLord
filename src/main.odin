@@ -89,6 +89,7 @@ main :: proc() {
         texatls_new(load_texture("player/idle.png"), 16, 16),
         texatls_new(load_texture("player/run.png"), 16, 16),
         texatls_new(load_texture("player/jump.png"), 16, 16),
+        texatls_new(load_texture("player/swing.png"), 16, 16),
     }
     gs.player.size = {16 - 2, 16 - 0.5}
     gs.player.bullets = make([dynamic]^Bullet)
@@ -218,7 +219,7 @@ update :: proc() {
 
         for i in &gs.player.bullets {
             bullet_update(i)
-            
+            // base_render(i, palettes[gs.palette][2])
             if abs(i.vel.x) > abs(i.vel.y) {
                 if i.vel.x < 0.0 {
                     texatls_render(i.sprite, {i.pos.x, i.pos.y + 5, 10, 10}, int(i.ci), 0, false, palettes[gs.palette][2], -90)

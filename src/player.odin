@@ -34,20 +34,30 @@ player_update :: proc(p: ^Player) {
     vinp: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
 
     anispd: f32
+    frames: f32
 
-    if !entity_on_tile(p, &tiles) {
+    if p.bullet_cooldown > 0.0 {
+        anispd = 14
+        frames = 9
+        p.ca = 3    
+    } else if !entity_on_tile(p, &tiles) {
+        anispd = 1
+        frames = 1
         p.ca = 2
     } else if hinp == 0.0 {
         anispd = 4
+        frames = 4
         p.ca = 0
     } else {
+        if p.ca != 1 do p.ci = 0
         anispd = 15
+        frames = 4
         p.ca = 1
     }
 
 
     p.ci += rl.GetFrameTime() * anispd
-    if p.ci > 7 do p.ci = 0
+    if p.ci > frames do p.ci = 0
 
     if hinp != 0 do p.flip = hinp == -1
 
@@ -127,13 +137,15 @@ player_update :: proc(p: ^Player) {
         // bvel: vec2 = ({bh * 0.7, bv * 0.7} + (p.vel == {0.0, 0.0} ? {0.0, 0.0} : vm.normalize(p.vel) * 0.3)) * 100
         bvel: vec2 = {bh, bv} * 100
 
+        p.ci = 0
+
         fmt.println(vec2 {bh * 0.7, bv * 0.7})
         fmt.println(vm.normalize(p.vel) * 0.3)
         fmt.println(p.vel)
         fmt.println(bvel)
 
         append(&p.bullets, bullet_new(bvel))
-        p.bullet_cooldown = 0.4
+        p.bullet_cooldown = 0.56
     }
 }
 
