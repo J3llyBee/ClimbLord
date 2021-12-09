@@ -92,6 +92,7 @@ main :: proc() {
         texatls_new(load_texture("player/jump.png"), 16, 16),
     }
     gs.player.size = {16 - 2, 16 - 0.5}
+    gs.player.bullets = make([dynamic]^Bullet)
 
     // gs.camera.offset.y = -240 * 3
 
@@ -201,12 +202,16 @@ update :: proc() {
     }
 
     
-    if gs.scolling do gs.camera.target.y -= 35 * rl.GetFrameTime()
+    // if gs.scolling do gs.camera.target.y -= 35 * rl.GetFrameTime()
     clear_background()
 
     rl.BeginMode2D(gs.camera)
         // entity_render(&gs.player, palettes[gs.palette][1])
         // entity_render(&gs.player.flag, palettes[gs.palette][2])
+        for i in &gs.player.bullets {
+            bullet_update(i)
+            base_render(i)
+        }
         player_render(&gs.player)
         room_render(gs.room)
 

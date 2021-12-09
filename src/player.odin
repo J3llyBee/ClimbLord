@@ -2,12 +2,16 @@ package main
 
 import "core:fmt"
 import "core:math"
+import vm "core:math/linalg/glsl"
 
 import rl "vendor:raylib"
 
 Player :: struct {
     using entity: Entity,
     sprite: []^Texatls,
+
+    bullets: [dynamic]^Bullet,
+    bullet_cooldown: f32,
 
     ci: f32,
     ca: int,
@@ -24,6 +28,8 @@ TERMVEL: f32 = math.sqrt(math.pow(JUMPVEL, 2) + 2 * GRAVITY)
 player_update :: proc(p: ^Player) {
     tiles := room_get_tiles(gs.room)
 
+    p.bullet_cooldown -= rl.GetFrameTime()
+
     hinp: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
     vinp: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
 
@@ -35,9 +41,10 @@ player_update :: proc(p: ^Player) {
         anispd = 4
         p.ca = 0
     } else {
-        anispd = 10
+        anispd = 15
         p.ca = 1
     }
+
 
     p.ci += rl.GetFrameTime() * anispd
     if p.ci > 4 do p.ci = 0
@@ -110,6 +117,24 @@ player_update :: proc(p: ^Player) {
 
 
     p.pos.x = p.pos.x + p.vel.x * rl.GetFrameTime()
+
+    bh: f32 = (input_is_down("S_RIGHT") ? 1.0 : 0.0) - (input_is_down("S_LEFT") ? 1.0 : 0.0)
+    bv: f32 = (input_is_down("S_UP") ? -1.0 : 0.0)
+
+    if bv != 0 && bh != 0 do bv = 0.0
+
+    if (bh != 0 || bv != 0) && p.bullet_cooldown <= 0.0 {
+        // bvel: vec2 = ({bh * 0.7, bv * 0.7} + (p.vel == {0.0, 0.0} ? {0.0, 0.0} : vm.normalize(p.vel) * 0.3)) * 100
+        bvel: vec2 = {bh, bv} * 100
+
+        fmt.println(vec2 {bh * 0.7, bv * 0.7})
+        fmt.println(vm.normalize(p.vel) * 0.3)
+        fmt.println(p.vel)
+        fmt.println(bvel)
+
+        append(&p.bullets, bullet_new(bvel))
+        p.bullet_cooldown = 0.4
+    }
 }
 
 player_check_collisions :: proc(p: ^Player) {

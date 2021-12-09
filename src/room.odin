@@ -30,18 +30,18 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 
 	// EDITOR
 
-	// for y in 0..<r.height {
- //        for x in 0..<r.width {
- //        	room_gen_tile(r, x, y)
- //        }
- //    }
+	for y in 0..<r.height {
+        for x in 0..<r.width {
+        	room_gen_tile(r, x, y)
+        }
+    }
 
 	// END OF EDITOR
 
-	for i in 0..<3 do room_init(r, i, rooms[rand.int_max(len(rooms))])
+	// for i in 0..<3 do room_init(r, i, rooms[rand.int_max(len(rooms))])
 
 	// Base Level
-	room_init(r, 3, #load("../room0"))
+	// room_init(r, 3, #load("../room0"))
 
     room_update_sprites(r)
 
