@@ -9,6 +9,7 @@ import rl "vendor:raylib"
 
 State :: struct {
     player: Player,
+    enemies: [dynamic]^Enemy,
     room: ^Room,
     camera: rl.Camera2D,
     palette: int,
@@ -94,6 +95,10 @@ main :: proc() {
     gs.player.size = {16 - 2, 16 - 0.5}
     gs.player.bullets = make([dynamic]^Bullet)
 
+    gs.enemies = make([dynamic]^Enemy)
+
+    
+
     // gs.camera.offset.y = -240 * 3
 
     tile_sprites = map[TileType][]rl.Texture {
@@ -108,6 +113,12 @@ main :: proc() {
         },
     }
 
+    enemy_sprites = map[EnemyType]rl.Texture {
+        .SHOOTER = load_texture("amon.png"),
+        .WALKER = load_texture("enemy/goom.png"),
+    }
+
+    append(&gs.enemies, enemy_new({100, 100}, .WALKER))
 
     for !rl.WindowShouldClose() {
         rl.PollInputEvents()
@@ -116,20 +127,16 @@ main :: proc() {
         switch gs.state {
             case .MENU:
                 clear_background()
-                // menu()
-                update()
-                break
+                menu()
+                // update()
             case .GAME:
                 clear_background()
                 update()
-                break
             case .DEAD:
                 start_button.pos.y = 200
                 dead()
-                break
             case .OPTIONS:
                 clear_background()
-                break
         }
 
         rl.EndDrawing()
@@ -208,12 +215,18 @@ update :: proc() {
     rl.BeginMode2D(gs.camera)
         // entity_render(&gs.player, palettes[gs.palette][1])
         // entity_render(&gs.player.flag, palettes[gs.palette][2])
+
         for i in &gs.player.bullets {
             bullet_update(i)
             base_render(i)
         }
+        for i in &gs.enemies {
+            enemy_update(i)
+            base_render(i, palettes[gs.palette][0])
+        }
         player_render(&gs.player)
         room_render(gs.room)
+        
 
         player_update(&gs.player)
     rl.EndMode2D()

@@ -1,5 +1,6 @@
 package main
 
+import "core:math"
 import "core:intrinsics"
 
 import rl "vendor:raylib"
@@ -27,7 +28,11 @@ entity_get_rect_r :: proc(e: rl.Rectangle) -> rl.Rectangle {
     return e
 }
 
-entity_get_rect :: proc{entity_get_rect_e, entity_get_rect_r}
+entity_get_rect_pp :: proc(e: ^^Enemy) -> rl.Rectangle {
+    return rl.Rectangle { e^.pos.x - e^.size.x / 2, e^.pos.y - e^.size.y / 2, e^.size.x, e^.size.y }
+}
+
+entity_get_rect :: proc{entity_get_rect_e, entity_get_rect_r, entity_get_rect_pp}
 
 // Check For Entity Collisions
 

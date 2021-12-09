@@ -1,5 +1,6 @@
 package main
 
+import "core:fmt"
 import "core:math"
 import "core:slice"
 
@@ -25,6 +26,7 @@ bullet_new :: proc(vel: vec2) -> ^Bullet {
 
 bullet_update :: proc(using e: ^Bullet) {
 	tiles := room_get_tiles(gs.room)
+	enemies := gs.enemies[:]
 
     hdir: f32 = math.sign(vel.x)
     if vel.x != 0 {
@@ -36,6 +38,17 @@ bullet_update :: proc(using e: ^Bullet) {
         	i, suc := slice.linear_search(gs.player.bullets[:], e)
 
         	if suc do unordered_remove(&gs.player.bullets, i)
+        }
+
+        
+        if entity_check_col(xcol, &enemies) {
+        	i, suc := slice.linear_search(gs.player.bullets[:], e)
+        	if suc do unordered_remove(&gs.player.bullets, i)
+
+        	cols := entity_get_cols(entity_get_rect(e), &enemies)
+
+        	i, suc = slice.linear_search(gs.enemies[:], cols[0])
+        	if suc do unordered_remove(&gs.enemies, i)
         }
     }
 
