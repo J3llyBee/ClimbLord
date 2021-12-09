@@ -51,7 +51,7 @@ enemy_update :: proc(using p: ^Enemy) {
 
 		    vdir: f32 = math.sign(p.vel.y)
 		    if p.vel.y != 0 {
-		        ycol := rl.Rectangle {p.pos.x - p.size.x / 2, p.pos.y, p.size.x, (p.size.y / 2 + 2) * vdir + (p.vel.y * rl.GetFrameTime())}
+		        ycol := rl.Rectangle {p.pos.x - p.size.x / 2, p.pos.y, p.size.x, (p.size.y / 2 + 6) * vdir + (p.vel.y * rl.GetFrameTime())}
 		        sign_rect(&ycol)
 
 		        // rl.DrawRectangleRec(ycol, rl.BLACK)
@@ -64,7 +64,6 @@ enemy_update :: proc(using p: ^Enemy) {
 		                    current = dist
 		                }
 		            }
-
 		            p.vel.y = 0
 		            p.pos.y += current * vdir - 0.1 * vdir
 		        }
@@ -74,7 +73,7 @@ enemy_update :: proc(using p: ^Enemy) {
 
 		    hdir: f32 = math.sign(p.vel.x)
 		    if p.vel.x != 0 {
-		        xcol := rl.Rectangle {p.pos.x, p.pos.y - p.size.y / 2, p.size.x / 2 * hdir + (p.vel.x * rl.GetFrameTime()), p.size.y}
+		        xcol := rl.Rectangle {p.pos.x, p.pos.y, p.size.x / 2 * hdir + (p.vel.x * rl.GetFrameTime()), p.size.y / 8}
 		        sign_rect(&xcol)
 
 		        // rl.DrawRectangleRec(xcol, rl.BLACK)

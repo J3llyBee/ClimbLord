@@ -16,11 +16,11 @@ Room :: struct {
 }
 
 rooms := [?][]u8 {
-	// #load("../room1"),
-	// #load("../chez.clr"),
-	// #load("../room2"),
-	// #load("../room3"),
-	#load("../enemytest"),
+	#load("../res/rooms/room1"),
+	#load("../res/rooms/room2"),
+	#load("../res/rooms/room3"),
+	#load("../res/rooms/room4"),
+	#load("../res/rooms/room5"),
 }
 
 // TODO: redo all the generation
@@ -41,10 +41,12 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 
 	// END OF EDITOR
 
-	// for i in 0..<3 do room_init(r, i, rooms[rand.int_max(len(rooms))])
+	for i in 0..<3 do room_init(r, i, rooms[rand.int_max(len(rooms))])
 
 	// Base Level
-	// room_init(r, 3, #load("../enemytest"))
+	// room_init(r, 3, #load("../res/rooms/room0"))
+
+	// room_load(r)
 
     room_update_sprites(r)
 
@@ -164,7 +166,7 @@ room_dump :: proc(r: ^Room) {
 }
 
 room_load :: proc(r: ^Room) {
-	data, _ := os.read_entire_file(get_input("ENTER PATH: "))
+	data, _ := os.read_entire_file(strings.concatenate({"res/rooms/", get_input("ENTER PATH: ")}))
 
 	for y in 0..<15 {
         for x in 0..<15 {
