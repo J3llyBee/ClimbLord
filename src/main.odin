@@ -86,7 +86,11 @@ main :: proc() {
 
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
-    gs.player.sprite = texatls_new(load_texture("player/idle.png"), 16, 16)
+    gs.player.sprite = {
+        texatls_new(load_texture("player/idle.png"), 16, 16),
+        texatls_new(load_texture("player/run.png"), 16, 16),
+        texatls_new(load_texture("player/jump.png"), 16, 16),
+    }
     gs.player.size = {16 - 2, 16 - 0.5}
 
     // gs.camera.offset.y = -240 * 3

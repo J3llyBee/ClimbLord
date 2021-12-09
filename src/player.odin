@@ -7,8 +7,10 @@ import rl "vendor:raylib"
 
 Player :: struct {
     using entity: Entity,
+    sprite: []^Texatls,
+
     ci: f32,
-    sprite: ^Texatls,
+    ca: int,
 
     vel: vec2,
     jumped: bool,
@@ -20,13 +22,25 @@ JUMPVEL: f32 = math.sqrt(2 * GRAVITY * 36)
 TERMVEL: f32 = math.sqrt(math.pow(JUMPVEL, 2) + 2 * GRAVITY)
 
 player_update :: proc(p: ^Player) {
-    p.ci += rl.GetFrameTime() * 4
-    if p.ci > 4 do p.ci = 0
-
     tiles := room_get_tiles(gs.room)
 
     hinp: f32 = (input_is_down("RIGHT") ? 1.0 : 0.0) - (input_is_down("LEFT") ? 1.0 : 0.0)
     vinp: f32 = (input_is_down("DOWN") ? 1.0 : 0.0) - (input_is_down("UP") ? 1.0 : 0.0)
+
+    anispd: f32
+
+    if !entity_on_tile(p, &tiles) {
+        p.ca = 2
+    } else if hinp == 0.0 {
+        anispd = 4
+        p.ca = 0
+    } else {
+        anispd = 10
+        p.ca = 1
+    }
+
+    p.ci += rl.GetFrameTime() * anispd
+    if p.ci > 4 do p.ci = 0
 
     if hinp != 0 do p.flip = hinp == -1
 
@@ -103,7 +117,7 @@ player_check_collisions :: proc(p: ^Player) {
 }
 
 player_render :: proc(using p: ^Player) {
-    texatls_render(p.sprite, {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), 0, p.flip, palettes[gs.palette][1])
-    texatls_render(p.sprite, {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), 1, p.flip, palettes[gs.palette][2])
+    texatls_render(sprite[ca], {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), 0, flip, palettes[gs.palette][1])
+    texatls_render(sprite[ca], {pos.x - size.x / 2 - 1, pos.y - size.y / 2 - 0.5, 16, 16}, int(p.ci), 1, flip, palettes[gs.palette][2])
 }
 // 0.211
