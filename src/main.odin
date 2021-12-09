@@ -218,7 +218,16 @@ update :: proc() {
 
         for i in &gs.player.bullets {
             bullet_update(i)
-            base_render(i, palettes[gs.palette][2])
+            
+            if abs(i.vel.x) > abs(i.vel.y) {
+                if i.vel.x < 0.0 {
+                    texatls_render(i.sprite, {i.pos.x, i.pos.y + 5, 10, 10}, int(i.ci), 0, false, palettes[gs.palette][2], -90)
+                } else {
+                    texatls_render(i.sprite, {i.pos.x, i.pos.y - 5, 10, 10}, int(i.ci), 0, false, palettes[gs.palette][2], 90)
+                }
+            } else {
+                texatls_render(i.sprite, {i.pos.x - 5, i.pos.y - 5, 10, 10}, int(i.ci), 0, false, palettes[gs.palette][2])
+            }
         }
         for i in &gs.enemies {
             // enemy_update(i)

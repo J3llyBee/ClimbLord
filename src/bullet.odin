@@ -10,7 +10,9 @@ import rl "vendor:raylib"
 Bullet :: struct {
 	using entity: Entity,
 	vel: vec2,
-	sprite: rl.Texture2D,
+
+    ci: f32,
+	sprite: ^Texatls,
 }
 
 bullet_new :: proc(vel: vec2) -> ^Bullet {
@@ -18,8 +20,7 @@ bullet_new :: proc(vel: vec2) -> ^Bullet {
 
 	b.entity = {gs.player.pos, {8, 8}} 
 	b.vel = vel
-	b.sprite = load_texture("bullet.png")
-
+	b.sprite = texatls_new(load_texture("player/flag.png"), 8, 8)
 
 	return b
 }
@@ -27,6 +28,9 @@ bullet_new :: proc(vel: vec2) -> ^Bullet {
 bullet_update :: proc(using e: ^Bullet) {
 	tiles := room_get_tiles(gs.room)
 	enemies := gs.enemies[:]
+
+    e.ci += rl.GetFrameTime() * 15
+    if e.ci > 7 do e.ci = 0
 
     hdir: f32 = math.sign(vel.x)
     if vel.x != 0 {
