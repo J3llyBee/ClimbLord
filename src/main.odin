@@ -82,9 +82,6 @@ main :: proc() {
 
     death_img = load_texture("death.png")
 
-    gs.room = room_new(15, 15, 65)
-    gs.room.bi = 3
-
     gs.player.pos = {100, 110}
     gs.player.vel = {0, 0}
     gs.player.sprite = {
@@ -113,12 +110,15 @@ main :: proc() {
         },
     }
 
-    enemy_sprites = map[EnemyType]rl.Texture {
-        .SHOOTER = load_texture("amon.png"),
-        .WALKER = load_texture("enemy/goom.png"),
+    enemy_sprites = map[EnemyType]^Texatls {
+        .WALKER = texatls_new(load_texture("enemy/goom.png"), 16, 16),
+        .GHOST = texatls_new(load_texture("ghostguy-Recovered.png"), 16, 16),
     }
 
-    append(&gs.enemies, enemy_new({100, 100}, .WALKER))
+    gs.room = room_new(15, 15, 65)
+    gs.room.bi = 3
+
+    // append(&gs.enemies, enemy_new({100, 100}, .GHOST))
 
     for !rl.WindowShouldClose() {
         rl.PollInputEvents()
@@ -187,9 +187,7 @@ update :: proc() {
     if gs.player.pos.y < 50 do gs.scolling = true
 
     room_update(gs.room)
-    if rl.IsKeyDown(rl.KeyboardKey.B) {
-        room_insert(gs.room, 2, #load("../room1"))
-    }
+
     room_editor()
     cooldown -= rl.GetFrameTime()
 
@@ -218,11 +216,12 @@ update :: proc() {
 
         for i in &gs.player.bullets {
             bullet_update(i)
-            base_render(i)
+            base_render(i, palettes[gs.palette][2])
         }
         for i in &gs.enemies {
-            enemy_update(i)
-            base_render(i, palettes[gs.palette][0])
+            // enemy_update(i)
+            texatls_render(i.sprite, {i.pos.x - i.size.x / 2, i.pos.y - i.size.y / 2, 16, 16}, int(i.ci), 0, false, palettes[gs.palette][0])
+            // base_render(i, palettes[gs.palette][0])
         }
         player_render(&gs.player)
         room_render(gs.room)

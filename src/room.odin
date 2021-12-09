@@ -4,6 +4,8 @@ import "core:math/rand"
 import "core:math"
 import "core:fmt"
 import "core:os"
+import "core:slice"
+import "core:strings"
 
 import rl "vendor:raylib"
 
@@ -16,8 +18,9 @@ Room :: struct {
 rooms := [?][]u8 {
 	// #load("../room1"),
 	// #load("../chez.clr"),
-	#load("../room2"),
-	#load("../room3"),
+	// #load("../room2"),
+	// #load("../room3"),
+	#load("../enemytest"),
 }
 
 // TODO: redo all the generation
@@ -41,7 +44,7 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 	// for i in 0..<3 do room_init(r, i, rooms[rand.int_max(len(rooms))])
 
 	// Base Level
-	// room_init(r, 3, #load("../room0"))
+	// room_init(r, 3, #load("../enemytest"))
 
     room_update_sprites(r)
 
@@ -63,6 +66,12 @@ room_update :: proc(r: ^Room) {
 		delay = 0.2
 
 		room_update_sprites(r)
+	}
+
+	for i in 0..<len(gs.enemies) {
+		if gs.enemies[i].pos.y > gs.camera.target.y + 240 * 2 {
+			unordered_remove(&gs.enemies, i)
+		}
 	}
 }
 
@@ -142,10 +151,16 @@ room_dump :: proc(r: ^Room) {
             if r.inner[p2i(r, x, y)] != nil {
             	data[p2i(r, x, y)] = u8(r.inner[p2i(r, x, y)].type)
         	}
+
+        	for e in &gs.enemies {
+        		if e.pos.x == f32(x) * 16 + 8 && e.pos.y == f32(y) * 16 + 8 {
+        			data[p2i(r, x, y)] = u8(e.type)
+        		}
+        	}
         }
     }
 
-    os.write_entire_file(get_input("ENTER PATH: "), data[:])
+    os.write_entire_file(strings.concatenate({"res/rooms/", get_input("ENTER PATH: ")}), data[:])
 }
 
 room_load :: proc(r: ^Room) {
@@ -155,8 +170,10 @@ room_load :: proc(r: ^Room) {
         for x in 0..<15 {
             if data[p2i(r, x, y)] == 0 {
             	room_delete_tile(r, x, y)
-            } else {
+            } else if data[p2i(r, x, y)] < 3 {
             	room_gen_tile(r, x, y, TileType(data[p2i(r, x, y)]))
+            } else {
+            	append_elem(&gs.enemies, enemy_new({f32(x) * 16 + 8, f32(y) * 16 + 8}, EnemyType(data[p2i(r, x, y)])))
             }
         }
     }
@@ -171,8 +188,10 @@ room_insert :: proc(r: ^Room, y: int, data: []u8) {
 
 			if data[p2i(r, x, y)] == 0 {
             	room_delete_tile(r, x, y + offset)
-            } else {
+            } else if data[p2i(r, x, y)] < 3 {
             	room_gen_tile_dif(r, x, y + offset, x, y, TileType(data[p2i(r, x, y)]))
+            } else {
+            	append_elem(&gs.enemies, enemy_new({f32(x) * 16 + 8, f32(y) * 16 + 8 + gs.camera.target.y  -240 * 3}, EnemyType(data[p2i(r, x, y)])))
             }
 		}
 	}
@@ -187,24 +206,49 @@ room_init :: proc(r: ^Room, y: int, data: []u8) {
 
 			if data[p2i(r, x, y)] == 0 {
             	room_delete_tile(r, x, y + offset)
-            } else {
+            } else if data[p2i(r, x, y)] < 3 {
             	room_gen_tile(r, x, y + offset, TileType(data[p2i(r, x, y)]), -240 * 3)
+            } else {
+            	append_elem(&gs.enemies, enemy_new({f32(x) * 16 + 8, f32(y + offset) * 16 + 8 + (-240 * 3)}, EnemyType(data[p2i(r, x, y)])))
             }
 		}
 	}
+
+	fmt.println(gs.enemies)
 }
 
 current_tile: u8 = 1
 
+posx: int
+posy: int
+
 room_editor :: proc() {
-    posx := int(f32(rl.GetMouseX()) / (240 * 4) * 15)
-    posy := int(f32(rl.GetMouseY()) / (240 * 4) * 15)
+    posx = int(f32(rl.GetMouseX()) / (240 * 4) * 15)
+    posy = int(f32(rl.GetMouseY()) / (240 * 4) * 15)
 
     if rl.IsMouseButtonDown(.LEFT) {
-        room_gen_tile(gs.room, posx, posy, TileType(current_tile))
+    	if current_tile > 2 {
+    		i, suc := slice.linear_search_proc(gs.enemies[:], proc(e: ^Enemy) -> bool {
+	    		return e.pos.x == f32(posx) * 16 + 8 && e.pos.y == f32(posy) * 16 + 8
+			})
+			
+	    	if suc do unordered_remove(&gs.enemies, i)
+
+    		room_delete_tile(gs.room, posx, posy)
+
+    		append_elem(&gs.enemies, enemy_new({f32(posx) * 16 + 8, f32(posy) * 16 + 8}, EnemyType(current_tile)))
+		} else {
+    		room_gen_tile(gs.room, posx, posy, TileType(current_tile))
+		}
 
         room_update_sprites(gs.room)
     } else if rl.IsMouseButtonDown(.RIGHT) {
+    	i, suc := slice.linear_search_proc(gs.enemies[:], proc(e: ^Enemy) -> bool {
+    		return e.pos.x == f32(posx) * 16 + 8 && e.pos.y == f32(posy) * 16 + 8
+		})
+
+    	if suc do unordered_remove(&gs.enemies, i)
+
         room_delete_tile(gs.room, posx, posy)
 
         room_update_sprites(gs.room)
@@ -220,6 +264,10 @@ room_editor :: proc() {
     	current_tile = 1
     } else if rl.IsKeyDown(rl.KeyboardKey.TWO) {
     	current_tile = 2
+    } if rl.IsKeyDown(rl.KeyboardKey.THREE) {
+    	current_tile = 3
+    } if rl.IsKeyDown(rl.KeyboardKey.FOUR) {
+    	current_tile = 4
     }
 }
  

@@ -47,7 +47,7 @@ player_update :: proc(p: ^Player) {
 
 
     p.ci += rl.GetFrameTime() * anispd
-    if p.ci > 4 do p.ci = 0
+    if p.ci > 7 do p.ci = 0
 
     if hinp != 0 do p.flip = hinp == -1
 

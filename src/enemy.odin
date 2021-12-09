@@ -1,13 +1,13 @@
 package main
 
 import "core:math"
+import vm "core:math/linalg/glsl"
 
 import rl "vendor:raylib"
 
 
 EnemyType :: enum {
-	SHOOTER = 3,
-	WALKER,
+	WALKER = 3,
 	GHOST,
 }
 
@@ -15,10 +15,12 @@ Enemy :: struct {
 	using entity: Entity,
 	vel: vec2,
 	type: EnemyType,
-	sprite: rl.Texture2D,
+
+	ci: f32,
+	sprite: ^Texatls,
 }
 
-enemy_sprites: map[EnemyType]rl.Texture
+enemy_sprites: map[EnemyType]^Texatls
 
 enemy_new :: proc(pos: vec2, type: EnemyType) -> ^Enemy {
 	e := new(Enemy)
@@ -32,9 +34,17 @@ enemy_new :: proc(pos: vec2, type: EnemyType) -> ^Enemy {
 
 enemy_update :: proc(using p: ^Enemy) {
 	tiles := room_get_tiles(gs.room)
+
+	p.ci += rl.GetFrameTime() * 7
+    if p.ci > 4 do p.ci = 0
+
 	#partial switch type {
-		case .SHOOTER:
-			//
+		case .GHOST:
+			if length_between(gs.player.pos, pos) < 50 {
+				dir := vm.normalize(gs.player.pos - pos)
+
+				pos += dir * 60 * rl.GetFrameTime()
+			}
 		case .WALKER:
 			if p.vel.x == 0.0 do p.vel.x = 100
 			p.vel.y = p.vel.y + GRAVITY * rl.GetFrameTime()
