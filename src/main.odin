@@ -8,6 +8,7 @@ import "core:intrinsics"
 import rl "vendor:raylib"
 
 State :: struct {
+    score: i32,
     player: Player,
     enemies: [dynamic]^Enemy,
     room: ^Room,
@@ -155,9 +156,9 @@ dead :: proc() {
         // entity_render(&gs.player.flag, palettes[gs.palette][2])
         player_render(&gs.player)
         room_render(gs.room)
-        rl.DrawTexture(death_img, 0, 0, rl.WHITE)
-        rl.DrawText("You died", 50, 50, 32, rl.WHITE)
-        rl.DrawText("Distance: 100m", 62, 100, 16, rl.WHITE)
+        rl.DrawTexture(death_img, 0, 0 + i32(gs.camera.target.y), rl.WHITE)
+        rl.DrawText("You died", 50, 50 + i32(gs.camera.target.y), 32, rl.WHITE)
+        rl.DrawText("Distance: 100m", 62, 100 + i32(gs.camera.target.y), 16, rl.WHITE)
 
         button_render(&start_button)
         button_update(&start_button)
@@ -185,6 +186,7 @@ menu :: proc() {
 
 update :: proc() {
     if gs.player.pos.y < 50 do gs.scolling = true
+    gs.score = i32(gs.player.pos.y)
 
     room_update(gs.room)
 
@@ -207,7 +209,7 @@ update :: proc() {
     }
 
     
-    // if gs.scolling do gs.camera.target.y -= 35 * rl.GetFrameTime()
+    if gs.scolling do gs.camera.target.y -= 35 * rl.GetFrameTime()
     clear_background()
 
     rl.BeginMode2D(gs.camera)
