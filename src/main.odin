@@ -67,8 +67,8 @@ main :: proc() {
 
     // rl.SetTargetFPS(60)
 
-    rl.InitAudioDevice()
-    rl.SetMasterVolume(0.1)
+    // rl.InitAudioDevice()
+    // rl.SetMasterVolume(0.1)
 
     jump_sfx = load_sound("jump.wav")
     shoot_sfx = load_sound("shoot.wav")

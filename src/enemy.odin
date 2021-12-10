@@ -35,9 +35,6 @@ enemy_new :: proc(pos: vec2, type: EnemyType) -> ^Enemy {
 enemy_update :: proc(using p: ^Enemy) {
 	tiles := room_get_tiles(gs.room)
 
-	p.ci += rl.GetFrameTime() * 7
-    if p.ci > 4 do p.ci = 0
-
     if entity_check_col_single(p, &gs.player.entity) {
     	rl.PlaySound(playerdie_sfx)
     	gs.state = .DEAD
@@ -50,6 +47,9 @@ enemy_update :: proc(using p: ^Enemy) {
 
 				pos += dir * 30 * rl.GetFrameTime()
 			}
+
+			p.ci += rl.GetFrameTime() * 7
+    		if p.ci > 4 do p.ci = 0
 		case .WALKER:
 			if p.vel.x == 0.0 do p.vel.x = 60
 			p.vel.y = p.vel.y + GRAVITY * rl.GetFrameTime()
