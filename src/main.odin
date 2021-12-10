@@ -84,7 +84,7 @@ main :: proc() {
     tutorialtext3 = load_texture("tutorialtext3.png")
 
     start_button = {
-        entity = {{100, 100}, {32, 64}},
+        entity = {{100, 300}, {32, 64}},
         sprite = load_texture("respan.png"),
         fn = proc() {
             reset()
@@ -93,7 +93,7 @@ main :: proc() {
     }
 
     option_button = {
-        entity = {{100, 200}, {32, 64}},
+        entity = {{100, 300}, {32, 64}},
         sprite = load_texture("respan.png"),
         fn = proc() {
             gs.state = .OPTIONS
@@ -179,13 +179,13 @@ dead :: proc() {
         cd := strings.unsafe_string_to_cstring(distance)
         rl.DrawText(cd, 62, 100 + i32(gs.camera.target.y), 16, rl.WHITE)
 
-        start_button.pos.y = gs.camera.target.y + 140
+        start_button.pos.y = gs.camera.target.y + 180
         button_render(&start_button)
         button_update(&start_button)
 
     rl.EndMode2D()
 
-    rl.DrawFPS(0, 0)
+    // rl.DrawFPS(0, 0)
 }
 
 menu :: proc() {
@@ -201,7 +201,7 @@ menu :: proc() {
 
     rl.EndMode2D()
 
-    rl.DrawFPS(0, 0)
+    // rl.DrawFPS(0, 0)
 }
 
 reset :: proc() {
@@ -261,6 +261,8 @@ update :: proc() {
         // entity_render(&gs.player, palettes[gs.palette][1])
         // entity_render(&gs.player.flag, palettes[gs.palette][2])
 
+        rl.DrawTexture(tutorialtext, 50, 50, palettes[gs.palette][3])
+
         for i in &gs.player.bullets {
             bullet_update(i)
             // base_render(i, palettes[gs.palette][2])
@@ -279,16 +281,17 @@ update :: proc() {
             texatls_render(i.sprite, {i.pos.x - i.size.x / 2, i.pos.y - i.size.y / 2, 16, 16}, int(i.ci), 0, false, palettes[gs.palette][0])
             // base_render(i, palettes[gs.palette][0])
         }
-        player_render(&gs.player)
         room_render(gs.room)
-        rl.DrawTexture(tutorialtext, 50, 50, palettes[gs.palette][3])
+
         rl.DrawTexture(tutorialtext2, 120, 50, palettes[gs.palette][0])
         rl.DrawTexture(tutorialtext3, 30, 170, palettes[gs.palette][0])
+
+        player_render(&gs.player)
 
         
 
         player_update(&gs.player)
     rl.EndMode2D()
 
-    rl.DrawFPS(0, 0)
+    // rl.DrawFPS(0, 0)
 }
