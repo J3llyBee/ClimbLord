@@ -4,6 +4,7 @@ import "core:fmt"
 import "core:time"
 import "core:strings"
 import "core:intrinsics"
+import "core:math/rand"
 
 import rl "vendor:raylib"
 
@@ -75,7 +76,8 @@ main :: proc() {
         entity = {{100, 100}, {32, 16}},
         sprite = load_texture("startbutton.png"),
         fn = proc() {
-            gs.state = .GAME
+            reset()
+            // gs.state = .GAME
         },
     }
 
@@ -101,8 +103,6 @@ main :: proc() {
     gs.player.bullets = make([dynamic]^Bullet)
 
     gs.enemies = make([dynamic]^Enemy)
-
-    
 
     // gs.camera.offset.y = -240 * 3
 
@@ -135,8 +135,8 @@ main :: proc() {
         switch gs.state {
             case .MENU:
                 clear_background()
-                menu()
-                // update()
+                // menu()
+                update()
             case .GAME:
                 clear_background()
                 update()
@@ -191,6 +191,29 @@ menu :: proc() {
     rl.DrawFPS(0, 0)
 }
 
+reset :: proc() {
+    room_clear(gs.room)
+    clear_dynamic_array(&gs.enemies)
+
+    for i in 0..<3 do room_init(gs.room, i, rooms[rand.int_max(len(rooms))])
+
+    room_init(gs.room, 3, #load("../res/rooms/room0"))
+
+    room_update_sprites(gs.room)
+
+    gs.room.bi = 3
+
+    gs.player.pos = {100, 110}
+    gs.player.vel = {0, 0}
+
+    gs.camera.target.y = 0
+
+    gs.scolling = false
+    gs.score = 0
+
+    gs.state = .GAME
+}
+
 update :: proc() {
     if gs.player.pos.y < 50 do gs.scolling = true
     gs.score = i32(gs.player.pos.y)
@@ -216,7 +239,7 @@ update :: proc() {
     }
 
     
-    // if gs.scolling do gs.camera.target.y -= 25 * rl.GetFrameTime()
+    if gs.scolling do gs.camera.target.y -= 25 * rl.GetFrameTime()
     clear_background()
 
     rl.BeginMode2D(gs.camera)
@@ -237,7 +260,7 @@ update :: proc() {
             }
         }
         for i in &gs.enemies {
-            // enemy_update(i)
+            enemy_update(i)
             texatls_render(i.sprite, {i.pos.x - i.size.x / 2, i.pos.y - i.size.y / 2, 16, 16}, int(i.ci), 0, false, palettes[gs.palette][0])
             // base_render(i, palettes[gs.palette][0])
         }

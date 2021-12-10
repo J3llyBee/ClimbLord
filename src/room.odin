@@ -21,6 +21,10 @@ rooms := [?][]u8 {
 	#load("../res/rooms/room3"),
 	#load("../res/rooms/room4"),
 	#load("../res/rooms/room5"),
+	#load("../res/rooms/room6"),
+	#load("../res/rooms/room7"),
+	#load("../res/rooms/room8"),
+	#load("../res/rooms/room9"),
 }
 
 // TODO: redo all the generation
@@ -33,18 +37,18 @@ room_new :: proc(width, height, fill: int) -> ^Room {
 
 	// EDITOR
 
-	for y in 0..<r.height {
-        for x in 0..<r.width {
-        	room_gen_tile(r, x, y)
-        }
-    }
+	// for y in 0..<r.height {
+ //        for x in 0..<r.width {
+ //        	room_gen_tile(r, x, y)
+ //        }
+ //    }
 
 	// END OF EDITOR
 
 	for i in 0..<3 do room_init(r, i, rooms[rand.int_max(len(rooms))])
 
-	// Base Level
-	// room_init(r, 3, #load("../res/rooms/room0"))
+	// // Base Level
+	room_init(r, 3, #load("../res/rooms/room0"))
 
 	// room_load(r)
 
@@ -162,11 +166,12 @@ room_dump :: proc(r: ^Room) {
         }
     }
 
-    os.write_entire_file(strings.concatenate({"res/rooms/", get_input("ENTER PATH: ")}), data[:])
+    os.write_entire_file("res/rooms/room10", data[:])
 }
 
 room_load :: proc(r: ^Room) {
-	data, _ := os.read_entire_file(strings.concatenate({"res/rooms/", get_input("ENTER PATH: ")}))
+	data, _ := os.read_entire_file("res/rooms/room5")
+	// data := #load("../res/rooms/room0")
 
 	for y in 0..<15 {
         for x in 0..<15 {
