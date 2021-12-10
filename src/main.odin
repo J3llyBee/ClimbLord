@@ -1,8 +1,8 @@
 package main
 
-// import "core:fmt"
+import "core:fmt"
 import "core:time"
-// import "core:strings"
+import "core:strings"
 import "core:intrinsics"
 import "core:math/rand"
 
@@ -77,7 +77,7 @@ main :: proc() {
 
     start_button = {
         entity = {{100, 100}, {32, 16}},
-        sprite = load_texture("startbutton.png"),
+        sprite = load_texture("respan.png"),
         fn = proc() {
             reset()
             // gs.state = .GAME
@@ -86,7 +86,7 @@ main :: proc() {
 
     option_button = {
         entity = {{100, 200}, {32, 16}},
-        sprite = load_texture("startbutton.png"),
+        sprite = load_texture("respan.png"),
         fn = proc() {
             gs.state = .OPTIONS
         },
@@ -153,7 +153,6 @@ main :: proc() {
     }
 }
 
-
 cooldown: f32 = 0
 
 dead :: proc() {
@@ -167,7 +166,10 @@ dead :: proc() {
         room_render(gs.room)
         rl.DrawTexture(death_img, 0, 0 + i32(gs.camera.target.y), rl.WHITE)
         rl.DrawText("You died", 50, 50 + i32(gs.camera.target.y), 32, rl.WHITE)
-        rl.DrawText("Distance: 100m", 62, 100 + i32(gs.camera.target.y), 16, rl.WHITE)
+
+        distance := fmt.tprintf("Distance: %dm", gs.score)
+        cd := strings.unsafe_string_to_cstring(distance)
+        rl.DrawText(cd, 62, 100 + i32(gs.camera.target.y), 16, rl.WHITE)
 
         start_button.pos.y = gs.camera.target.y + 140
         button_render(&start_button)
