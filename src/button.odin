@@ -18,5 +18,5 @@ button_update :: proc(e: ^UI) {
 }
 
 button_render :: proc(using e: ^UI) {
-	rl.DrawTexture(sprite, i32(pos.x / 2), i32(pos.y / 2), rl.WHITE)
+	rl.DrawTexture(sprite, i32(pos.x - size.x / 2), i32(pos.y - size.y / 2), rl.WHITE)
 }
