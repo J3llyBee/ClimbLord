@@ -67,7 +67,8 @@ main :: proc() {
 
     // rl.SetTargetFPS(60)
 
-    // rl.InitAudioDevice()
+    rl.InitAudioDevice()
+    rl.SetMasterVolume(0.1)
 
     jump_sfx = load_sound("jump.wav")
     shoot_sfx = load_sound("shoot.wav")
@@ -218,7 +219,7 @@ reset :: proc() {
 
 update :: proc() {
     if gs.player.pos.y < 50 do gs.scolling = true
-    gs.score = i32(gs.player.pos.y)
+    gs.score = i32(abs(gs.player.pos.y) / 16)
 
     room_update(gs.room)
 

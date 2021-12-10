@@ -38,6 +38,11 @@ enemy_update :: proc(using p: ^Enemy) {
 	p.ci += rl.GetFrameTime() * 7
     if p.ci > 4 do p.ci = 0
 
+    if entity_check_col_single(p, &gs.player.entity) {
+    	rl.PlaySound(playerdie_sfx)
+    	gs.state = .DEAD
+    }
+
 	#partial switch type {
 		case .GHOST:
 			if length_between(gs.player.pos, pos) < 70 {

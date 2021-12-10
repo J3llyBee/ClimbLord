@@ -2,6 +2,7 @@ package main
 
 // import "core:fmt"
 import "core:math"
+import "core:fmt"
 import vm "core:math/linalg/glsl"
 
 import rl "vendor:raylib"
@@ -131,6 +132,7 @@ player_update :: proc(p: ^Player) {
     bh: f32 = (input_is_down("S_RIGHT") ? 1.0 : 0.0) - (input_is_down("S_LEFT") ? 1.0 : 0.0)
 
     if (bh != 0) && p.bullet_cooldown <= 0.0 {
+        fmt.println(gs.score)
         rl.PlaySound(shoot_sfx)
         // bvel: vec2 = ({bh * 0.7, bv * 0.7} + (p.vel == {0.0, 0.0} ? {0.0, 0.0} : vm.normalize(p.vel) * 0.3)) * 100
         bvel: vec2 = {bh, 0} * 100
@@ -146,6 +148,7 @@ player_update :: proc(p: ^Player) {
 
     }
     if p.pos.y > gs.camera.target.y + 240 + p.size.y / 2 {
+        rl.PlaySound(playerdie_sfx)
         gs.state = .DEAD
     }
 }
