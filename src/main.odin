@@ -84,7 +84,7 @@ main :: proc() {
     tutorialtext3 = load_texture("tutorialtext3.png")
 
     start_button = {
-        entity = {{100, 300}, {32, 64}},
+        entity = {{100, 300}, {64, 32}},
         sprite = load_texture("respan.png"),
         fn = proc() {
             reset()
