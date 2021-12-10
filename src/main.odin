@@ -31,6 +31,10 @@ shoot_sfx: rl.Sound
 enemydie_sfx: rl.Sound
 playerdie_sfx: rl.Sound
 
+tutorialtext: rl.Texture
+tutorialtext2: rl.Texture
+tutorialtext3: rl.Texture
+
 start_button: UI
 option_button: UI
 death_img: rl.Texture2D
@@ -75,8 +79,12 @@ main :: proc() {
     enemydie_sfx = load_sound("deathsound.wav")
     playerdie_sfx = load_sound("playerdeath.wav")
 
+    tutorialtext = load_texture("tutorialtext.png")
+    tutorialtext2 = load_texture("tutorialtext2.png")
+    tutorialtext3 = load_texture("tutorialtext3.png")
+
     start_button = {
-        entity = {{100, 100}, {32, 16}},
+        entity = {{100, 100}, {32, 64}},
         sprite = load_texture("respan.png"),
         fn = proc() {
             reset()
@@ -85,7 +93,7 @@ main :: proc() {
     }
 
     option_button = {
-        entity = {{100, 200}, {32, 16}},
+        entity = {{100, 200}, {32, 64}},
         sprite = load_texture("respan.png"),
         fn = proc() {
             gs.state = .OPTIONS
@@ -225,7 +233,9 @@ update :: proc() {
 
     room_update(gs.room)
 
-    room_editor()
+
+
+    // room_editor()
     cooldown -= rl.GetFrameTime()
 
     if input_is_down("PALETTE") && cooldown < 0 {
@@ -271,6 +281,10 @@ update :: proc() {
         }
         player_render(&gs.player)
         room_render(gs.room)
+        rl.DrawTexture(tutorialtext, 50, 50, palettes[gs.palette][3])
+        rl.DrawTexture(tutorialtext2, 120, 50, palettes[gs.palette][0])
+        rl.DrawTexture(tutorialtext3, 30, 170, palettes[gs.palette][0])
+
         
 
         player_update(&gs.player)
