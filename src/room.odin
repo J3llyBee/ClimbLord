@@ -2,10 +2,10 @@ package main
 
 import "core:math/rand"
 import "core:math"
-import "core:fmt"
-import "core:os"
+// import "core:fmt"
+// import "core:os"
 import "core:slice"
-import "core:strings"
+// import "core:strings"
 
 import rl "vendor:raylib"
 
@@ -64,7 +64,7 @@ room_update :: proc(r: ^Room) {
 
 	if int(gs.camera.target.y) % 240 == 0 && int(gs.camera.target.y) != 0 && delay <= 0.0 {
 		r2 := rand.int_max(len(rooms))
-		fmt.println(r2)
+		// fmt.println(r2)
 		room_insert(r, r.bi, rooms[r2])
 
 		r.bi = r.bi - 1 < 0 ? 3 : r.bi - 1
@@ -149,42 +149,42 @@ room_get_tiles :: #force_inline proc(r: ^Room) -> []Tile {
     return nt[:]
 }
 
-room_dump :: proc(r: ^Room) {
-    data: [15 * 15]u8
+// room_dump :: proc(r: ^Room) {
+//     data: [15 * 15]u8
 
-    for y in 0..<15 {
-        for x in 0..<15 {
-            if r.inner[p2i(r, x, y)] != nil {
-            	data[p2i(r, x, y)] = u8(r.inner[p2i(r, x, y)].type)
-        	}
+//     for y in 0..<15 {
+//         for x in 0..<15 {
+//             if r.inner[p2i(r, x, y)] != nil {
+//             	data[p2i(r, x, y)] = u8(r.inner[p2i(r, x, y)].type)
+//         	}
 
-        	for e in &gs.enemies {
-        		if e.pos.x == f32(x) * 16 + 8 && e.pos.y == f32(y) * 16 + 8 {
-        			data[p2i(r, x, y)] = u8(e.type)
-        		}
-        	}
-        }
-    }
+//         	for e in &gs.enemies {
+//         		if e.pos.x == f32(x) * 16 + 8 && e.pos.y == f32(y) * 16 + 8 {
+//         			data[p2i(r, x, y)] = u8(e.type)
+//         		}
+//         	}
+//         }
+//     }
 
-    os.write_entire_file("res/rooms/room10", data[:])
-}
+//     os.write_entire_file("res/rooms/room10", data[:])
+// }
 
-room_load :: proc(r: ^Room) {
-	data, _ := os.read_entire_file("res/rooms/room5")
-	// data := #load("../res/rooms/room0")
+// room_load :: proc(r: ^Room) {
+// 	data, _ := os.read_entire_file("res/rooms/room5")
+// 	// data := #load("../res/rooms/room0")
 
-	for y in 0..<15 {
-        for x in 0..<15 {
-            if data[p2i(r, x, y)] == 0 {
-            	room_delete_tile(r, x, y)
-            } else if data[p2i(r, x, y)] < 3 {
-            	room_gen_tile(r, x, y, TileType(data[p2i(r, x, y)]))
-            } else {
-            	append_elem(&gs.enemies, enemy_new({f32(x) * 16 + 8, f32(y) * 16 + 8}, EnemyType(data[p2i(r, x, y)])))
-            }
-        }
-    }
-}
+// 	for y in 0..<15 {
+//         for x in 0..<15 {
+//             if data[p2i(r, x, y)] == 0 {
+//             	room_delete_tile(r, x, y)
+//             } else if data[p2i(r, x, y)] < 3 {
+//             	room_gen_tile(r, x, y, TileType(data[p2i(r, x, y)]))
+//             } else {
+//             	append_elem(&gs.enemies, enemy_new({f32(x) * 16 + 8, f32(y) * 16 + 8}, EnemyType(data[p2i(r, x, y)])))
+//             }
+//         }
+//     }
+// }
 
 room_insert :: proc(r: ^Room, y: int, data: []u8) {
 	offset := 15 * y
@@ -221,7 +221,7 @@ room_init :: proc(r: ^Room, y: int, data: []u8) {
 		}
 	}
 
-	fmt.println(gs.enemies)
+	// fmt.println(gs.enemies)
 }
 
 current_tile: u8 = 1
@@ -261,9 +261,9 @@ room_editor :: proc() {
         room_update_sprites(gs.room)
     }
 
-    if rl.IsKeyDown(rl.KeyboardKey.G) {
-        room_dump(gs.room)
-    }
+    // if rl.IsKeyDown(rl.KeyboardKey.G) {
+    //     room_dump(gs.room)
+    // }
 
     rl.GetKeyPressed()
 

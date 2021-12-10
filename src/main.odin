@@ -1,8 +1,8 @@
 package main
 
-import "core:fmt"
+// import "core:fmt"
 import "core:time"
-import "core:strings"
+// import "core:strings"
 import "core:intrinsics"
 import "core:math/rand"
 
@@ -65,7 +65,9 @@ main :: proc() {
         gs.camera.zoom = 4
     }
 
-    rl.InitAudioDevice()
+    // rl.SetTargetFPS(60)
+
+    // rl.InitAudioDevice()
 
     jump_sfx = load_sound("jump.wav")
     shoot_sfx = load_sound("shoot.wav")

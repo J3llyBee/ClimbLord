@@ -1,7 +1,7 @@
 package main
 
 import rl "vendor:raylib"
-import "core:fmt"
+// import "core:fmt"
 
 UI :: struct {
 	using entity: Entity,

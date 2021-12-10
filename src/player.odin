@@ -1,6 +1,6 @@
 package main
 
-import "core:fmt"
+// import "core:fmt"
 import "core:math"
 import vm "core:math/linalg/glsl"
 

@@ -40,13 +40,13 @@ enemy_update :: proc(using p: ^Enemy) {
 
 	#partial switch type {
 		case .GHOST:
-			if length_between(gs.player.pos, pos) < 50 {
+			if length_between(gs.player.pos, pos) < 70 {
 				dir := vm.normalize(gs.player.pos - pos)
 
-				pos += dir * 60 * rl.GetFrameTime()
+				pos += dir * 30 * rl.GetFrameTime()
 			}
 		case .WALKER:
-			if p.vel.x == 0.0 do p.vel.x = 100
+			if p.vel.x == 0.0 do p.vel.x = 60
 			p.vel.y = p.vel.y + GRAVITY * rl.GetFrameTime()
 
 		    vdir: f32 = math.sign(p.vel.y)
