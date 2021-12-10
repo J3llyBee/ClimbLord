@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<script src="main.js" defer></script>
+	</head>
+	<body>
+		<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+		
+		<audio id="jump" src="jump.wav" />
+		<audio id="shoot" src="shoot.wav" />
+
+		<script type='text/javascript'>
+			var Module = {
+				canvas: document.getElementById('canvas'),
+			};
+			
+			document.addEventListener("keydown", e => {
+				switch (e.keyCode) {
+					case 87:
+						document.getElementById("jump").play()
+						break;
+					case 37:
+					case 39:
+						document.getElementById("shoot").play()
+						break;
+				}
+			});
+		</script>
+
+		<style>
+			* {
+				border:  0;
+				padding: 0;
+				margin: 0;
+
+				overflow: hidden;
+			}
+
+			body {
+				background-color: black;
+			}
+
+			canvas {
+				position: absolute;
+
+				height: 100%;
+
+				left: 50%;
+				transform: translateX(-50%);
+			}
+		</style>
+	</body>
+</html>
